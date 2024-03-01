@@ -1,6 +1,6 @@
 import React from 'react'
 import Banner from '../../components/Banner'
-import Categories from '../Categories'
+import Categories from './Categories'
 import SpecialDishes from './SpecialDishes'
 import Services from './Services'
 import Footer from '../../components/Footer'

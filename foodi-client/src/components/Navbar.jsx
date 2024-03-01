@@ -2,20 +2,18 @@ import React, { useContext, useEffect, useState } from 'react'
 import logo from '/logo.jpg'
 import { FaCircleUser } from "react-icons/fa6";
 import Modal from './Modal';
-import { AuthContext } from '../contexts/AuthProvider';
+
 import Profile from './Profile';
 import { Link } from 'react-router-dom';
 import useCart from '../hooks/useCart';
-
+import useAuth from '../hooks/useAuth';
 
 const Navbar = () => {
-  const[isSticky,setSticky]=useState(false);
-  // handle scroll functions
-  
-  const {user}=useContext(AuthContext)
-  console.log(user)
+
+  const [isSticky, setSticky] = useState(false);
+  const {user, loading} = useAuth();
   const [cart, refetch] = useCart();
-  console.log(cart)
+
   
   
   useEffect( () => {

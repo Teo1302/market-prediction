@@ -1,13 +1,22 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../contexts/AuthProvider";
+import { Link, useNavigate } from "react-router-dom";
+
 
 const Profile = ({ user }) => {
-  const {logOut} = useContext(AuthContext)
+  const {logOut} = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  //logout
   const handleLogout = () => {
-    logOut().then(() => {
+    logOut()
+    .then(() => {
+      navigate("/")
       // Sign-out successful.
-    }).catch((error) => {
+    })
+    .catch((error) => {
       // An error happened.
+      console.log(error);
     });
   }
   return (
@@ -42,10 +51,13 @@ const Profile = ({ user }) => {
               <a href="/update-profile">Profile</a>
             </li>
             <li>
-              <a>Order</a>
+              <a href="/order">Order</a>
             </li>
             <li>
-              <a>Setting</a>
+              <a>Settings</a>
+            </li>
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
             </li>
             <li>
               <a onClick={handleLogout}>Logout</a>
