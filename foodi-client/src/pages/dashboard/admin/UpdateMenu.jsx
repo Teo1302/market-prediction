@@ -67,7 +67,6 @@ const UpdateMenu = () => {
             </label>
             <input
               type="text"
-              defaultValue={item.name}
               {...register("name", { required: true })}
               placeholder="Recipe Name"
               className="input input-bordered w-full "
@@ -84,7 +83,7 @@ const UpdateMenu = () => {
               <select
                 {...register("category", { required: true })}
                 className="select select-bordered"
-                defaultValue={item.category}
+                
               >
                 <option disabled value="default">
                   Select a category
@@ -105,7 +104,7 @@ const UpdateMenu = () => {
               </label>
               <input
                 type="number"
-                defaultValue={item.price}
+            
                 {...register("price", { required: true })}
                 placeholder="Price"
                 className="input input-bordered w-full"
@@ -119,7 +118,7 @@ const UpdateMenu = () => {
               <span className="label-text">Recipe Details</span>
             </label>
             <textarea
-             defaultValue={item.recipe}
+             
               {...register("recipe", { required: true })}
               className="textarea textarea-bordered h-24"
               placeholder="Tell the worlds about your recipe"

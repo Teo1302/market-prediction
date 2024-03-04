@@ -4,11 +4,13 @@ import { useForm } from "react-hook-form";
 import useAxiosPublic from "../../../hooks/useAxiosPublic";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from 'sweetalert2'
+import useMenu from "../../../hooks/useMenu";
 
 const AddMenu = () => {
   const { register, handleSubmit, reset } = useForm();
   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
+  const [menu, loading, refetch] = useMenu();
 
   // image hosting key
   const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
@@ -27,6 +29,7 @@ const AddMenu = () => {
       const menuItem = {
         name: data.name,
         category: data.category,
+        // CA SA FIE NUMBERS PUNEM PARSEFLOAT
         price: parseFloat(data.price), 
         recipe: data.recipe,
         image: hostingImg.data.data.display_url
@@ -43,6 +46,7 @@ const AddMenu = () => {
           showConfirmButton: false,
           timer: 1500
         });
+        refetch();
       }
     }
   };
@@ -61,6 +65,7 @@ const AddMenu = () => {
               <span className="label-text">Recipe Name*</span>
             </label>
             <input
+            // trebuie ca asta register("name" sa fie la fel ca ce avem in baza de date
               type="text"
               {...register("name", { required: true })}
               placeholder="Recipe Name"
@@ -82,6 +87,7 @@ const AddMenu = () => {
               >
                 <option disabled value="default">
                   Select a category
+                  {/* same category ca cele din menu.json */}
                 </option>
                 <option value="salad">Salad</option>
                 <option value="pizza">Pizza</option>
@@ -126,7 +132,7 @@ const AddMenu = () => {
               className="file-input w-full max-w-xs"
             />
           </div>
-
+         {/* button final */}
           <button className="btn bg-green text-white px-6">
             Add Item <FaUtensils />
           </button>
