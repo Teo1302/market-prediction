@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 
 function Banner() {
   return (
@@ -13,7 +15,10 @@ function Banner() {
           <p className='text-x1 text-[#4A4A4A]'>
           Delicatețe la Fiecare Pas
           </p>
+          <Link to="/menu">
           <button className='btn bg-green px-8 py-3 font-semibold text-white rounded-full'>Comanda Acum</button>
+          </Link>
+          
         </div>
         {/* images */}
         <div className='md:w-1/2'>

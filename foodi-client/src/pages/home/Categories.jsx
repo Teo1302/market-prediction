@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 const categoryItems=[
     {id:1, title:"FastFood",des:"(20 feluri)", image:"images/home/categ1.jpg"},
     {id:2, title:"Mic dejun",des:"(10 feluri)", image:"images/home/categ2.jpg"},
@@ -27,6 +28,11 @@ const Categories = () => {
                     <div className='mt-5 space-y-1'>
                          <h5>{item.title}</h5>
                          <p>{item.des}</p>
+                         
+                <button className='btn bg-green px-4 py-2 text-white rounded-full'>
+                  Vezi Meniu
+                </button>
+
                     </div>
 
 
