@@ -15,6 +15,9 @@ import AddMenu from "../pages/dashboard/admin/AddMenu";
 import ManageItems from "../pages/dashboard/admin/ManageItems";
 import UpdateMenu from "../pages/dashboard/admin/UpdateMenu";
 import Payment from "../pages/shop/Payment";
+import Oferta from "../pages/shop/Oferta";
+import Rezervare from "../pages/shop/Rezervare";
+import Reservation from "../pages/shop/Reservation";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +47,18 @@ const router = createBrowserRouter([
       {
         path: "/process-checkout",
         element: <Payment/>
+      },
+      {
+        path: "/rezervare",
+        element: <Rezervare/>
+      },
+      {
+        path: "/oferta",
+        element: <Oferta/>
+      },
+      {
+        path: "/vizualizare-rezervari",
+        element: <Reservation/>
       }
 
     ]

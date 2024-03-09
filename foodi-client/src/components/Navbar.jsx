@@ -51,9 +51,8 @@ const Navbar = () => {
         <details>
           <summary>Servicii</summary>
           <ul className="p-2">
-            <li><a>Comanda online!</a></li>
-            <li><a>Rezerva masa!</a></li>
-            <li><a>Status comanda</a></li>
+            <li><a href="/rezervare">Rezerva masa!</a></li>
+            <li><a href="/order">Status comanda</a></li>
           </ul>
         </details>
         </li>
