@@ -18,6 +18,8 @@ import Payment from "../pages/shop/Payment";
 import Oferta from "../pages/shop/Oferta";
 import Rezervare from "../pages/shop/Rezervare";
 import Reservation from "../pages/shop/Reservation";
+import CartDetails from "../pages/shop/CartDetails";
+import Numerar from "../pages/shop/Numerar";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +43,10 @@ const router = createBrowserRouter([
         element: <CartPage/>,
       },
       {
+        path: "/cart-details",
+        element: <CartDetails/>,
+      },
+      {
         path: "/update-profile",
         element: <UpdateProfile/>,
       },
@@ -59,7 +65,11 @@ const router = createBrowserRouter([
       {
         path: "/vizualizare-rezervari",
         element: <Reservation/>
-      }
+      },
+      {
+        path: "//checkout-numerar",
+        element: <Numerar/>
+      },
 
     ]
   },
