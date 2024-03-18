@@ -9,6 +9,7 @@ const Menu = () => {
   const [sortOption, setSortOption] = useState("default");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8); // Number of items to display per page
+  const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
     // Fetch data from the backend
@@ -24,7 +25,23 @@ const Menu = () => {
     };
 
     fetchData();
-  }, []);
+  }, []); // Empty dependency array to fetch data only once when component mounts
+
+  useEffect(() => {
+    filterBySearch();
+  }, [searchInput]); // Update filtered items when searchInput changes
+
+  const filterBySearch = () => {
+    if (searchInput.trim() === "") {
+      setFilteredItems(menu); // If search input is empty, display all items
+    } else {
+      const filtered = menu.filter((item) =>
+        item.name.toLowerCase().includes(searchInput.toLowerCase())
+      );
+      setFilteredItems(filtered);
+    }
+    setCurrentPage(1); // Reset current page to 1 whenever search input changes
+  };
 
   const filterItems = (category) => {
     const filtered =
@@ -35,12 +52,6 @@ const Menu = () => {
     setFilteredItems(filtered);
     setSelectedCategory(category);
     setCurrentPage(1);
-  };
-
-  const showAll = () => {
-    setFilteredItems(menu);
-    setSelectedCategory("all");
-    setCurrentPage(1); 
   };
 
   const handleSortChange = (option) => {
@@ -71,14 +82,15 @@ const Menu = () => {
     setCurrentPage(1);
   };
 
-//   console.log(filteredItems);
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredItems.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
 
   return (
     <div>
@@ -105,11 +117,21 @@ const Menu = () => {
       {/* menu shop  */}
       <div className="section-container">
         <div className="flex flex-col md:flex-row flex-wrap md:justify-between items-center space-y-3 mb-8">
-          
-           {/* all category buttons */}
+          {/* Bara de căutare */}
+          <div className="max-w-screen-2xl container mx-auto xl:px-24 px-4 mb-4">
+            <input
+              type="text"
+              placeholder="Cauta..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              className="w-full bg-gray-100 rounded-md p-2 mb-4"
+            />
+          </div>
+
+          {/* all category buttons */}
           <div className="flex flex-row justify-start md:items-center md:gap-8 gap-4  flex-wrap">
             <button
-              onClick={showAll}
+              onClick={() => filterItems("all")}
               className={selectedCategory === "all" ? "active" : ""}
             >
               All
@@ -146,7 +168,7 @@ const Menu = () => {
             </button>
           </div>
 
-            {/* filter options */}
+          {/* filter options */}
           <div className="flex justify-end mb-4 rounded-sm">
             <div className="bg-black p-2 ">
               <FaFilter className="text-white h-4 w-4" />
@@ -166,16 +188,18 @@ const Menu = () => {
           </div>
         </div>
 
-        {/* product card */}
+        {/* Product card or message */}
         <div className="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-4 ">
-          {currentItems.map((item) => (
-            <Cards key={item._id} item={item} />
-          ))}
+          {currentItems.length > 0 ? (
+            currentItems.map((item) => <Cards key={item._id} item={item} />)
+          ) : (
+            <p className="text-center mt-8">Nu avem acest tip de meniu, încercați altceva.</p>
+          )}
         </div>
       </div>
 
-       {/* Pagination */}
-       <div className="flex justify-center my-8">
+      {/* Pagination */}
+      <div className="flex justify-center my-8">
         {Array.from({ length: Math.ceil(filteredItems.length / itemsPerPage) }).map((_, index) => (
           <button
             key={index + 1}

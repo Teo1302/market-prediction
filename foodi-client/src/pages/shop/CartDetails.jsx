@@ -2,8 +2,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
-import useAxiosPublic from '../../hooks/useAxiosPublic.jsx';
-import useAxiosSecure from '../../hooks/useAxiosSecure.jsx';
 import { Link } from 'react-router-dom';
 import React, { useState,useEffect } from 'react';
 import { FaRegUser } from "react-icons/fa6";
@@ -13,6 +11,7 @@ import { FaRunning } from "react-icons/fa";
 import { CiForkAndKnife } from "react-icons/ci";
 import DateTimePicker from 'react-datetime-picker';
 import { FaRegCalendarAlt } from "react-icons/fa";
+import useAuth from '../../hooks/useAuth.jsx';
 
 const CartDetails = () => {
   const [livrareLaDomiciliu, setLivrareLaDomiciliu] = useState(false);
@@ -21,51 +20,131 @@ const CartDetails = () => {
   const [selectedDateTime, setSelectedDateTime] = useState(new Date());
   const [plataOnlineCuCardul, setPlataOnlineCuCardul] = useState(false);
   const [plataNumerar,setPlataNumerar]=useState(false);
-  const { register, handleSubmit, reset, trigger, formState: { errors,isSubmitting } } = useForm();
+  const { register, reset, trigger, formState: { isSubmitting } } = useForm();
   const [detaliiCompletate, setDetaliiCompletate] = useState(false);
   const [isFormCompleted, setIsFormCompleted] = useState(false);
   const [metodaDeLivrareSelectata, setMetodaDeLivrareSelectata] = useState(false);
   const [metodaDePlataSelectata, setmetodaDePlataSelectata] = useState(false);
   const [tacamuriSelectate, setTacamuriSelectate] = useState('');
-
+  const { user } = useAuth(); 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Verifică dacă toate câmpurile obligatorii sunt completate
-    const isFormCompleted = !errors.nume && !errors.nume && !errors.email && !errors.phoneNumber ;
-    setIsFormCompleted(isFormCompleted);
-  }, [errors]);
-  const validationRulesNume = {
-    required: 'Acest câmp este obligatoriu',
-    minLength: {
-      value: 3,
-      message: 'Trebuie să conțină cel puțin 3 caractere'
-    },
-    pattern: {
-      value: /^[A-Za-z ]+$/,
-      message: 'Nu poti scrie alte caractere decat litere',
-    },
+  const [formData, setFormData] = useState({
+    nume: '',
+    email: '',
+    prenume: '',
+    phone: ''
+  });
+
+  const [errors, setErrors] = useState({
+    nume: '',
+    email: '',
+    prenume: '',
+    phone: ''
+  });
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+  
+    if ((name === 'nume' || name === 'prenume') && /[^a-zA-ZăâîșțĂÂÎȘȚ\s]/.test(value)) {
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [name]: 'Câmpul nu poate conține cifre sau caractere speciale.'
+      }));
+    } else {
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [name]: ''
+      }));
+  
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        [name]: value
+      }));
+    }
+  
+    if (name === 'phone') {
+      // Verificăm dacă numărul de telefon conține doar cifre
+      if (!/^\d*$/.test(value)) {
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          [name]: 'Numărul de telefon poate conține doar cifre.'
+        }));
+      } else {
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          [name]: ''
+        }));
+      }
+    }
   };
-  const validationRulesTelefon = {
-    required: 'Acest câmp este obligatoriu',
-    minLength: {
-      value: 10,
-      message: 'Numărul de telefon trebuie să aibă exact 10 cifre',
-    },
-    maxLength: {
-      value: 10,
-      message: 'Numărul de telefon trebuie să aibă exact 10 cifre',
-    },
-    pattern: {
-      value: /^[0-9]+$/,
-      message: 'Introduceți un număr de telefon valid',
-    },
-    validate: {
-      startsWithZero: value => value.charAt(0) === '0' || 'Numărul de telefon trebuie să înceapă cu 0',
-    },
-  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Previne comportamentul implicit de trimitere a formularului
+    
+    // Verifică dacă câmpurile obligatorii sunt goale
+    if (
+      formData.nume.trim() === '' ||
+      formData.email.trim() === '' ||
+      formData.prenume.trim() === '' ||
+      formData.phone.trim() === '' 
+     
+    ) {
+      // Actualizează starea de eroare pentru câmpurile goale
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        nume: formData.nume.trim() === '' ? 'Acest câmp este obligatoriu' : '',
+        email: formData.email.trim() === '' ? 'Acest câmp este obligatoriu' : '',
+        prenume: formData.prenume.trim() === '' ? 'Acest câmp este obligatoriu' : '',
+        phone: formData.phone.trim() === '' ? 'Acest câmp este obligatoriu' : '',
+        
+      }));
+      // Afișează un mesaj de eroare folosind SweetAlert
+      Swal.fire({
+        icon: 'error',
+        title: 'Eroare!',
+        text: 'Vă rugăm să completați toate câmpurile de date personale, acestea sunt obligatorii.',
+      });
+      return;}
+      if (formData.phone.length !== 10 || formData.phone.charAt(0) !== '0') {
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          phone: 'Numărul de telefon trebuie să aibă exact 10 caractere și să înceapă cu 0.'
+        }));
+        Swal.fire({
+          icon: 'error',
+          title: 'Eroare!',
+          text: 'Vă rugăm să completati datele cu un numar de telefon valid.',
+        });
+        return;
+         // Opriți trimiterea formularului dacă numărul de telefon nu respectă restricțiile
+      }
+      // Adăugați aici logica pentru trimiterea formularului către server sau altă acțiune
+      
+      // Afișați un mesaj de succes folosind SweetAlert
+      //Swal.fire({
+       // icon: 'success',
+       // title: 'Succes!',
+       // text: 'Datele comenzii au fost trimise cu succes!',
+      //}); // Opriți trimiterea formularului dacă unul dintre câmpurile obligatorii este gol
+    }
+
+
+ 
+  
   
   const handleGoToPayment = () => {
+    handleSubmit()
+    const isFormCompleted =
+    !errors.nume &&
+    !errors.prenume &&
+    !errors.email &&
+    !errors.phoneNumber &&
+    metodaDeLivrareSelectata &&
+    metodaDePlataSelectata &&
+    tacamuriSelectate &&
+    selectedDateTime;
+
     if (!isFormCompleted) {
       Swal.fire({
         icon: 'error',
@@ -214,7 +293,7 @@ const CartDetails = () => {
            {/* nume */}
            <h3 className='font-bold mt-10 mb-10 text-left'>Datele dumneavoastra</h3>
            
-           <div className="card w-80 bg-base-100 shadow-xl mb-8 mx-auto my-auto ml-1">
+           <div className="card w-96 bg-base-100 shadow-xl mb-8 mx-auto my-auto ml-1">
             <div className="card-body">
               <h2 className="card-title"><FaRegUser />Date personale</h2>
               <div className="card-actions justify-end">
@@ -226,14 +305,12 @@ const CartDetails = () => {
   </label>
   <input
     type="text"
-    {...register('nume',validationRulesNume)}
- 
+    name="nume"
+    {...register('nume')}
+    value={formData.nume}
     placeholder="Introduceti numele"
     className={`input input-bordered w-full ${errors.nume ? 'input-error' : ''}`}
-    onBlur={async () => {
-      // Activează funcția de validare când utilizatorul părăsește câmpul
-      await trigger('nume');
-    }}
+    onChange={handleInputChange}
   />
   {errors.nume && <span className="error-message">{errors.nume.message}</span>}
 </div>
@@ -244,13 +321,12 @@ const CartDetails = () => {
   </label>
   <input
     type="text"
-    {...register('prenume', validationRulesNume)}
+    name="prenume"
+    {...register('prenume')}
+    value={formData.prenume}
     placeholder="Introduceti prenumele"
     className={`input input-bordered w-full ${errors.prenume ? 'input-error' : ''}`}
-    onBlur={async () => {
-      // Activează funcția de validare când utilizatorul părăsește câmpul
-      await trigger('prenume');
-    }}
+    onChange={handleInputChange}
   />
   {errors.prenume && <span className="error-message">{errors.prenume.message}</span>}
 </div>
@@ -261,6 +337,7 @@ const CartDetails = () => {
   </label>
   <input
     type="email" 
+    name="email"
     {...register('email', {
       required: 'Acest câmp este obligatoriu',
       pattern: {
@@ -268,12 +345,10 @@ const CartDetails = () => {
         message: 'Introduceți o adresă de email validă',
       },
     })}
+    value={formData.email}
     placeholder="Introduceti adresa de email"
     className={`input input-bordered w-full ${errors.email ? 'input-error' : ''}`}
-    onBlur={async () => {
-      // Activează funcția de validare când utilizatorul părăsește câmpul
-      await trigger('email');
-    }}
+    onChange={handleInputChange}
   />
   {errors.email && <span className="error-message">{errors.email.message}</span>}
 </div>
@@ -283,15 +358,16 @@ const CartDetails = () => {
     <span className="label-text"><b>Număr Telefon</b></span>  
   </label>
   <input
+   className={`input input-bordered w-full ${errors.phone ? 'input-error' : ''}`}
     type="tel" 
-    {...register('phoneNumber',validationRulesTelefon)}
+    name='phone'
+    {...register('phone')}
+    value={formData.phone}
     placeholder="Introduceti numărul de telefon"
-    className={`input input-bordered w-full ${errors.phoneNumber ? 'input-error' : ''}`}
-    onBlur={async () => {
-      await trigger('phoneNumber');
-    }}
+    onChange={handleInputChange}
+    required
   />
-  {errors.phoneNumber && <span className="error-message">{errors.phoneNumber.message}</span>}
+  {errors.phone && <span className="error-message">{errors.phone.message}</span>}
   </div>
   </div>
   </div>
@@ -500,7 +576,7 @@ const CartDetails = () => {
 </div>
 
 <button onClick={handleGoToPayment}>Mergi spre plata online</button>
-<button onClick={handleGoToPayment}>Finalizează comanda numerar</button>
+
 
 </div>
 

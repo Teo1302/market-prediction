@@ -6,6 +6,8 @@ import { AuthContext } from "../contexts/AuthProvider";
 import axios from "axios";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import useAuth from "../hooks/useAuth";
+import { signInWithPopup, FacebookAuthProvider } from 'firebase/auth';
+
 
 const Login = () => {
   const [errorMessage, seterrorMessage] = useState("");
@@ -16,7 +18,19 @@ const Login = () => {
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/";
-
+  
+  const handleFacebookLogin = () => {
+    signInWithPopup(auth, new FacebookAuthProvider())
+      .then((result) => {
+        // Aici puteți gestiona rezultatul autentificării cu Facebook
+        console.log(result);
+      })
+      .catch((error) => {
+        // Aici puteți gestiona erorile survenite în timpul autentificării cu Facebook
+        console.error(error);
+      });
+  };
+  
   //react hook form
   const {
     register,

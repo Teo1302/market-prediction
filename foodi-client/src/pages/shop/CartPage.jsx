@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { FaTrash } from "react-icons/fa";
 import {Link} from 'react-router-dom'
 import axios from "axios";
+import CartDetails from "./CartDetails";
 
 const CartPage = () => {
   const { user } = useContext(AuthContext);
@@ -202,13 +203,18 @@ const CartPage = () => {
         </div>
         <hr />
         <div className="flex flex-col md:flex-row justify-between items-start my-12 gap-8">
-          <div className="md:w-1/2 space-y-3">
+          <div className="md:w-1/2 space-y-3 mt-4">
             <h3 className="text-lg font-semibold">Customer Details</h3>
             <p>Name: {user?.displayName || "None"}</p>
             <p>Email: {user?.email}</p>
             <p>
               User_id: <span className="text-sm">{user?.uid}</span>
             </p>
+            <Link to= '/menu'> 
+            <button className="btn btn-md bg-green text-white px-8 py-1 mt-4">
+             Continua Cumparaturile
+            </button>
+            </Link>
           </div>
           <div className="md:w-1/2 space-y-3">
             <h3 className="text-lg font-semibold">Shopping Details</h3>
@@ -217,9 +223,9 @@ const CartPage = () => {
               Total Price:{" "}
               <span id="total-price">${orderTotal.toFixed(2)}</span>
             </p>
-            <Link to= '/process-checkout'> 
-            <button className="btn btn-md bg-green text-white px-8 py-1">
-              Procceed to Checkout
+            <Link to= '/cart-details'> 
+            <button className="btn btn-md bg-green text-white px-8 py-1 mt-4">
+              Plaseaza comanda
             </button>
             </Link>
           </div>

@@ -20,6 +20,10 @@ import Rezervare from "../pages/shop/Rezervare";
 import Reservation from "../pages/shop/Reservation";
 import CartDetails from "../pages/shop/CartDetails";
 import Numerar from "../pages/shop/Numerar";
+import Favorite from "../components/Favorite";
+import Contact from "../components/Contact";
+import Prezentare from "../components/Prezentare";
+import Pizza from  "../components/Pizza";
 
 const router = createBrowserRouter([
   {
@@ -67,9 +71,25 @@ const router = createBrowserRouter([
         element: <Reservation/>
       },
       {
-        path: "//checkout-numerar",
+        path: "/checkout-numerar",
         element: <Numerar/>
       },
+      {
+        path: "/favorite",
+        element: <Favorite/>
+      },
+      {
+        path: "/contact",
+        element: <Contact/>
+      },
+      {
+        path: "/prezentare",
+        element: <Prezentare/>
+      },
+      {
+        path: "/pizza",
+        element: <Pizza/>
+      }
 
     ]
   },
@@ -107,7 +127,7 @@ const router = createBrowserRouter([
         loader: ({params}) => fetch(`http://localhost:6001/menu/${params.id}`)
       },
       //{
-        //path: 'bookings',
+        //path: '/vizualizare-rezervari',
        // element: <ManageBookings/>
       //}
     ]

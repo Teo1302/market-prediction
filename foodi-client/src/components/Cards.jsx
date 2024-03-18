@@ -6,15 +6,16 @@ import Swal from 'sweetalert2'
 import useCart from "../hooks/useCart";
 
 
+
 const Cards = ({ item }) => {
   const {name,image, price, recipe, _id}= item;
-  // console.log(item)
   const [isHeartFilled, setIsHeartFilled] = useState(false);
   const{user}=useContext(AuthContext);
-  //console.log(user)
   const navigate = useNavigate();
   const location=useLocation();
   const [cart, refetch] = useCart();
+  const [isInFavorites, setIsInFavorites] = useState(false);
+
 
 
 //add to cart bttn
@@ -70,19 +71,70 @@ const Cards = ({ item }) => {
     }
 
   };
-  const handleHeartClick = () => {
-    setIsHeartFilled(!isHeartFilled);
+  const handleAddToFavorite = () => {
+    if (!user || !user.email) {
+      Swal.fire({
+        title: "Please Login",
+        text: "You need to be logged in to add products to favorites.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Login"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/login', { state: { from: location } });
+        }
+      });
+    } else {
+      if (isInFavorites) {
+        removeFromFavorite();
+      } else {
+        addToFavorite();
+      }
+    }
   };
+  
+  const removeFromFavorite = () => {
+    setIsInFavorites(false);
+    setIsHeartFilled(false);
+    Swal.fire({
+      title: "Do you want to remove the product from favorites?",
+      showDenyButton: true,
+      confirmButtonText: "Yes",
+      denyButtonText: "No"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Product Removed from Favorites!", "", "success");
+        // Inima devine albă numai după confirmarea eliminării
+      }
+    });
+  };
+  
+  
+  
+  const addToFavorite = () => {
+    setIsInFavorites(true);
+    setIsHeartFilled(true);
+    Swal.fire("Product Added to Favorites!", "", "success");
+   
+  };
+  
+  const handleHeartClick = () => {
+    handleAddToFavorite();
+  };
+
   return (
     <div to={`/menu/${item._id}`} className="card shadow-xl relative mr-5 md:my-5">
-      <div
-        className={`rating gap-1 absolute right-2 top-2 p-4 heartStar bg-green ${
-          isHeartFilled ? "text-rose-500" : "text-white"
-        }`}
-        onClick={handleHeartClick}
-      >
-        <FaHeart className="w-5 h-5 cursor-pointer" />
-      </div>
+  <div
+  className={`rating gap-1 absolute right-2 top-2 p-4 heartStar bg-green ${
+    isHeartFilled ? "text-rose-500" : isInFavorites ? "text-rose-500" : "text-white"
+  }`}
+  onClick={handleHeartClick}
+>
+  <FaHeart className="w-5 h-5 cursor-pointer" />
+</div>
+
       <Link to={`/menu/${item._id}`}>
         <figure>
           <img src={item.image} alt="Shoes" className="hover:scale-105 transition-all duration-300 md:h-72" />
