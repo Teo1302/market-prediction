@@ -3,6 +3,8 @@ import { MdPermContactCalendar } from "react-icons/md";
 import { TbTruckDelivery } from "react-icons/tb";
 import Swal from 'sweetalert2';
 
+
+
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -19,11 +21,9 @@ const Contact = () => {
     phone: '',
     message: ''
   });
-  
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Previne comportamentul implicit de trimitere a formularului
-    
-    // Verifică dacă câmpurile obligatorii sunt goale
+  const [clientMessages, setClientMessages] = useState([]);
+
+  const sendFormDataToClientMessages = () => {
     if (
       formData.name.trim() === '' ||
       formData.email.trim() === '' ||
@@ -31,7 +31,6 @@ const Contact = () => {
       formData.phone.trim() === '' ||
       formData.message.trim() === ''
     ) {
-      // Actualizează starea de eroare pentru câmpurile goale
       setErrors(prevErrors => ({
         ...prevErrors,
         name: formData.name.trim() === '' ? 'Acest câmp este obligatoriu' : '',
@@ -40,14 +39,14 @@ const Contact = () => {
         phone: formData.phone.trim() === '' ? 'Acest câmp este obligatoriu' : '',
         message: formData.message.trim() === '' ? 'Acest câmp este obligatoriu' : ''
       }));
-      // Afișează un mesaj de eroare folosind SweetAlert
       Swal.fire({
         icon: 'error',
         title: 'Eroare!',
         text: 'Vă rugăm să completați toate câmpurile obligatorii.',
       });
-      return; // Opriți trimiterea formularului dacă unul dintre câmpurile obligatorii este gol
+      return;
     }
+  
     if (formData.phone.length !== 10 || formData.phone.charAt(0) !== '0') {
       setErrors(prevErrors => ({
         ...prevErrors,
@@ -59,17 +58,52 @@ const Contact = () => {
         text: 'Vă rugăm să completati datele cu un numar de telefon valid.',
       });
       return;
-       // Opriți trimiterea formularului dacă numărul de telefon nu respectă restricțiile
     }
-    // Adăugați aici logica pentru trimiterea formularului către server sau altă acțiune
-    
-    // Afișați un mesaj de succes folosind SweetAlert
+
+    let storedMessages = JSON.parse(localStorage.getItem('clientMessages')) || [];
+    if (!Array.isArray(storedMessages)) {
+      // Transformă obiectul într-un array
+      storedMessages = [storedMessages];
+    }
+  
+    const updatedMessages = [...storedMessages, formData];
+    localStorage.setItem('clientMessages', JSON.stringify(updatedMessages));
+    setClientMessages(updatedMessages);
+  
+    // Afișează un mesaj de succes folosind SweetAlert
     Swal.fire({
       icon: 'success',
       title: 'Succes!',
       text: 'Formularul a fost trimis cu succes!',
     });
+  
+    // Resetează starea formularului după trimiterea cu succes
+    setFormData({
+      name: '',
+      email: '',
+      prenume: '',
+      phone: '',
+      message: ''
+    });
+    // Setează starea de eroare la inițial după trimiterea cu succes
+    setErrors({
+      name: '',
+      email: '',
+      prenume: '',
+      phone: '',
+      message: ''
+    });
   };
+  
+
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+  
+    sendFormDataToClientMessages();
+    
+  };
+  
 
   // Funcție pentru actualizarea valorii unui câmp în starea formularului
   const handleInputChange = (event) => {

@@ -4,6 +4,7 @@ const Reservation = require('../models/Reservations');
 // Adăugare rezervare
 const createReservation = async (req, res) => {
     const reservationData = req.body;
+
     try {
         const result = await Reservation.create(reservationData);
         res.status(200).json(result);
@@ -21,7 +22,7 @@ const getAllReservations = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-// // Actualizare rezervare
+ // Actualizare rezervare
 // const updateReservation = async (req, res) => {
 //     const reservationId = req.params.id;
 //     const updatedData = req.body;
@@ -51,9 +52,21 @@ const deleteReservation = async (req, res) => {
     }
 };
 
+// Modificare in reservationController.js
+
+const getReservationsByUser = async (req, res) => {
+    try {
+      const userEmail = req.user.email;
+      const reservations = await Reservation.find({ email: userEmail });
+      res.status(200).json(reservations);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
 module.exports = {
     createReservation,
     getAllReservations,
-    //updateReservation,
-    deleteReservation,
+    getReservationsByUser, 
+    deleteReservation
 };

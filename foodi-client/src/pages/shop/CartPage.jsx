@@ -20,34 +20,35 @@ const CartPage = () => {
   };
   // Handle quantity increase
   const handleIncrease = async (item) => {
-    try {
-      const response = await fetch(`http://localhost:6001/carts/${item._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ quantity: item.quantity + 1 }),
-      });
+  try {
+    const response = await fetch(`http://localhost:6001/carts/${item._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ quantity: item.quantity + 1 }),
+    });
 
-      if (response.ok) {
-        const updatedCart = cartItems.map((cartItem) => {
-          if (cartItem.id === item.id) {
-            return {
-              ...cartItem,
-              quantity: cartItem.quantity + 1,
-            };
-          }
-          return cartItem;
-        });
-        await refetch();
-        setCartItems(updatedCart);
-      } else {
-        console.error("Failed to update quantity");
-      }
-    } catch (error) {
-      console.error("Error updating quantity:", error);
+    if (response.ok) {
+      const updatedCart = cartItems.map((cartItem) => {
+        if (cartItem._id === item._id) { // Modificare aici pentru a verifica după _id
+          return {
+            ...cartItem,
+            quantity: cartItem.quantity + 1,
+          };
+        }
+        return cartItem;
+      });
+      setCartItems(updatedCart);
+      await refetch(); // Actualizare starea locală cartItems
+    } else {
+      console.error("Failed to update quantity");
     }
-  };
+  } catch (error) {
+    console.error("Error updating quantity:", error);
+  }
+};
+
   // Handle quantity decrease
   const handleDecrease = async (item) => {
     if (item.quantity > 1) {
@@ -126,7 +127,7 @@ const CartPage = () => {
           {/* content */}
           <div className=" text-center px-4 space-y-7">
             <h2 className="md:text-5xl text-4xl font-bold md:leading-snug leading-snug">
-              Items Added to The<span className="text-green"> Cart</span>
+              Meniuri adaugate in <span className="text-green"> Cosul de Cumparaturi</span>
             </h2>
           </div>
         </div>
@@ -143,11 +144,11 @@ const CartPage = () => {
               <thead className="bg-green text-white rounded-sm">
                 <tr>
                   <th>#</th>
-                  <th>Food</th>
-                  <th>Item Name</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-                  <th>Action</th>
+                  <th>Meniu</th>
+                  <th>Nume</th>
+                  <th>Cantitate</th>
+                  <th>Pret</th>
+                  <th>Actiune</th>
                 </tr>
               </thead>
               <tbody>
@@ -185,7 +186,7 @@ const CartPage = () => {
                         +
                       </button>
                     </td>
-                    <td>${calculateTotalPrice(item).toFixed(2)}</td>
+                    <td>{calculateTotalPrice(item).toFixed(2)} lei</td>
                     <td>
                       <button
                         className="btn btn-sm border-none text-red bg-transparent"
@@ -221,7 +222,7 @@ const CartPage = () => {
             <p>Total Items: {cart.length}</p>
             <p>
               Total Price:{" "}
-              <span id="total-price">${orderTotal.toFixed(2)}</span>
+              <span id="total-price">{orderTotal.toFixed(2)} lei</span>
             </p>
             <Link to= '/cart-details'> 
             <button className="btn btn-md bg-green text-white px-8 py-1 mt-4">

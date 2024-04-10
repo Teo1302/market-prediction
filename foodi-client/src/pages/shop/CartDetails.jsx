@@ -12,6 +12,8 @@ import { CiForkAndKnife } from "react-icons/ci";
 import DateTimePicker from 'react-datetime-picker';
 import { FaRegCalendarAlt } from "react-icons/fa";
 import useAuth from '../../hooks/useAuth.jsx';
+import Numerar from './Numerar';
+
 
 const CartDetails = () => {
   const [livrareLaDomiciliu, setLivrareLaDomiciliu] = useState(false);
@@ -22,26 +24,46 @@ const CartDetails = () => {
   const [plataNumerar,setPlataNumerar]=useState(false);
   const { register, reset, trigger, formState: { isSubmitting } } = useForm();
   const [detaliiCompletate, setDetaliiCompletate] = useState(false);
-  const [isFormCompleted, setIsFormCompleted] = useState(false);
+  const [ setIsFormCompleted] = useState(false);
   const [metodaDeLivrareSelectata, setMetodaDeLivrareSelectata] = useState(false);
   const [metodaDePlataSelectata, setmetodaDePlataSelectata] = useState(false);
   const [tacamuriSelectate, setTacamuriSelectate] = useState('');
   const { user } = useAuth(); 
   const navigate = useNavigate();
+  const [clientDetails, setClientDetails] = useState({});
+
+
 
   const [formData, setFormData] = useState({
     nume: '',
     email: '',
     prenume: '',
-    phone: ''
+    phone: '',
+    tipLivrare: '',
+    adresaLivrare: '', 
+    oras: '', 
+    codPostal: '',
+    metodaDePlata: '',
+    momentPrimireComanda: '',
+    tacamuri: '',
+    instructiuniSpeciale: ''
   });
 
   const [errors, setErrors] = useState({
     nume: '',
     email: '',
     prenume: '',
-    phone: ''
+    phone: '',
+    tipLivrare: '',
+    adresaLivrare: '', 
+    oras: '', 
+    codPostal: '',
+    metodaDePlata: '',
+    momentPrimireComanda: '',
+    tacamuri: '',
+    instructiuniSpeciale: ''
   });
+
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -79,6 +101,66 @@ const CartDetails = () => {
     }
   };
 
+  const handleTimeOptionChange = (event) => {
+    const value = event.target.value;
+    // Dacă utilizatorul selectează opțiunea "Mai traziu", arată câmpul de selectare a datei și orei
+    setShowDateTimePicker(value === "Mai traziu");
+    // Actualizează starea pentru momentul de primire a comenzii în formData
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      momentPrimireComanda: value === "Mai traziu" ? "Mai Tarziu" : "Cat De Repede"
+    }));
+  };
+  
+ 
+  const handleLivrareClick = () => {
+    setLivrareLaDomiciliu(true);
+    setRidicareDinRestaurant(false);
+    setMetodaDeLivrareSelectata(true);
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      tipLivrare: 'domiciliu'
+    }));
+  };
+ 
+
+  const handleRidicareClick = () => {
+    setLivrareLaDomiciliu(false);
+    setRidicareDinRestaurant(true);
+    setMetodaDeLivrareSelectata(true);
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      tipLivrare: 'ridicare' // Setează tipul de livrare la 'ridicare'
+    }));
+  };
+  
+  const handlePlataOptionChange = (event) => {
+    const value = event.target.value;
+    // Setare stări în funcție de valoarea selectată
+    setPlataOnlineCuCardul(value === "plataOnline");
+    setPlataNumerar(value !== "plataOnline");
+    // Actualizare starea pentru metodaDePlata și metodaDePlataSelectata în formData
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      metodaDePlata: value === "plataOnline" ? "online" : "numerar",
+      metodaDePlataSelectata: true // Actualizare metodaDePlataSelectata
+    }));
+  };
+  
+  
+  
+  const handleTacamuriOptionChange = (event) => {
+    const value = event.target.value;
+    setTacamuriSelectate(value);
+  
+    // Actualizarea stării momentPrimireComanda în funcție de valoarea selectată pentru tacâmuri
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      tacamuri: value === "da" ? "da" : "nu"
+    }));
+  };
+  
+  
   const handleSubmit = (event) => {
     event.preventDefault(); // Previne comportamentul implicit de trimitere a formularului
     
@@ -87,8 +169,7 @@ const CartDetails = () => {
       formData.nume.trim() === '' ||
       formData.email.trim() === '' ||
       formData.prenume.trim() === '' ||
-      formData.phone.trim() === '' 
-     
+      formData.phone.trim() === ''
     ) {
       // Actualizează starea de eroare pentru câmpurile goale
       setErrors(prevErrors => ({
@@ -97,7 +178,6 @@ const CartDetails = () => {
         email: formData.email.trim() === '' ? 'Acest câmp este obligatoriu' : '',
         prenume: formData.prenume.trim() === '' ? 'Acest câmp este obligatoriu' : '',
         phone: formData.phone.trim() === '' ? 'Acest câmp este obligatoriu' : '',
-        
       }));
       // Afișează un mesaj de eroare folosind SweetAlert
       Swal.fire({
@@ -105,144 +185,126 @@ const CartDetails = () => {
         title: 'Eroare!',
         text: 'Vă rugăm să completați toate câmpurile de date personale, acestea sunt obligatorii.',
       });
-      return;}
-      if (formData.phone.length !== 10 || formData.phone.charAt(0) !== '0') {
-        setErrors(prevErrors => ({
-          ...prevErrors,
-          phone: 'Numărul de telefon trebuie să aibă exact 10 caractere și să înceapă cu 0.'
-        }));
-        Swal.fire({
-          icon: 'error',
-          title: 'Eroare!',
-          text: 'Vă rugăm să completati datele cu un numar de telefon valid.',
-        });
-        return;
-         // Opriți trimiterea formularului dacă numărul de telefon nu respectă restricțiile
-      }
-      // Adăugați aici logica pentru trimiterea formularului către server sau altă acțiune
-      
-      // Afișați un mesaj de succes folosind SweetAlert
-      //Swal.fire({
-       // icon: 'success',
-       // title: 'Succes!',
-       // text: 'Datele comenzii au fost trimise cu succes!',
-      //}); // Opriți trimiterea formularului dacă unul dintre câmpurile obligatorii este gol
+      return;
     }
-
-
- 
   
-  
-  const handleGoToPayment = () => {
-    handleSubmit()
-    const isFormCompleted =
-    !errors.nume &&
-    !errors.prenume &&
-    !errors.email &&
-    !errors.phoneNumber &&
-    metodaDeLivrareSelectata &&
-    metodaDePlataSelectata &&
-    tacamuriSelectate &&
-    selectedDateTime;
-
-    if (!isFormCompleted) {
+    if (formData.phone.length !== 10 || formData.phone.charAt(0) !== '0') {
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        phone: 'Numărul de telefon trebuie să aibă exact 10 caractere și să înceapă cu 0.'
+      }));
       Swal.fire({
         icon: 'error',
-        title: 'Oops...',
-        text: 'Completează toate câmpurile personale pentru a merge spre plata online',
+        title: 'Eroare!',
+        text: 'Vă rugăm să completați datele cu un număr de telefon valid.',
       });
-    } else if (!metodaDeLivrareSelectata) {
+      return;
+    }
+  
+    // Verifică dacă metoda de livrare a fost selectată
+    if (!formData.tipLivrare) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Selectați o metodă de livrare pentru a continua',
       });
-    } else if (livrareLaDomiciliu && (!register('adresaLivrare').value || !register('oras').value || !register('codPostal').value)) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Completați datele necesare livrarii la domiciliu pentru a continua',
-      });
+      return;
     }
-    else if (!tacamuriSelectate) {
-      // Afișează mesajul de eroare dacă nu este selectată nicio opțiune pentru tacâmuri
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Selectați dacă doriți sau nu tacâmuri pentru comanda dvs.',
-      });
-    }
-    else if (showDateTimePicker && selectedDateTime < new Date()) {
-      // Verificați dacă utilizatorul a selectat o dată și oră mai mică decât data și ora curentă
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Selectați o dată și oră validă pentru livrare',
-      });}
-      else if (!showDateTimePicker) {
-        // Afișați un mesaj de eroare specific atunci când utilizatorul nu a selectat nicio opțiune pentru data și ora livrării
+
+    if (formData.tipLivrare === 'domiciliu') {
+      if (
+        formData.adresaLivrare.trim() === '' ||
+        formData.oras.trim() === '' ||
+        formData.codPostal.trim() === ''
+      ) {
+        // Dacă există erori, actualizează starea errors cu erorile corespunzătoare
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          adresaLivrare: formData.adresaLivrare.trim() === '' ? 'Acest câmp este obligatoriu' : '',
+          oras: formData.oras.trim() === '' ? 'Acest câmp este obligatoriu' : '',
+          codPostal: formData.codPostal.trim() === '' ? 'Acest câmp este obligatoriu' : '',
+        }));
+        // Afișează un mesaj de eroare folosind SweetAlert
         Swal.fire({
           icon: 'error',
-          title: 'Oops...',
-          text: 'Selectați când doriți să primiți comanda',
+          title: 'Eroare!',
+          text: 'Vă rugăm să completați toate câmpurile de adresă pentru livrarea la domiciliu.',
         });
-      } 
-    else if (!metodaDePlataSelectata) {
+        return;
+      } else {
+        // Dacă nu există erori, actualizează starea errors pentru câmpurile respective cu valori goale
+        setErrors({
+          adresaLivrare: '',
+          oras: '',
+          codPostal: ''
+        });
+      }
+    }
+    
+    // Verifică dacă metoda de plată a fost selectată
+    if (!formData.metodaDePlataSelectata) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Selectați o metodă de plata pentru a continua',
+        text: 'Selectați o metodă de plată pentru a continua',
       });
+      return;
     }
-      if (plataOnlineCuCardul) {
-        // Redirectează către plata online
-        navigate('/process-checkout');
-      } else if(plataNumerar){
-        // Aici poți adăuga logica pentru altfel de plată (de exemplu, plata la livrare)
-        // Poți adăuga și o altă condiție sau funcționalitate specifică pentru altfel de plată
-        // De exemplu, dacă plata se face la livrare, poți afișa o altă pagină sau poți executa o altă acțiune
-        // În lipsa unei specificații clare privind comportamentul dorit, nu pot oferi un exemplu specific
-        navigate('/checkout-numerar');
-      }
+    if (!formData.momentPrimireComanda) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Selectați cand sa primiti comanda pentru a continua',
+      });
+      return;
     }
-  
-  
-  
+    if (!formData.tacamuri) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Selectați daca sa primti sau nu tacamuri pentru a continua',
+      });
+      return;
+    }
 
-  const handleTimeOptionChange = (event) => {
-    const value = event.target.value;
-    // Dacă utilizatorul selectează opțiunea "Mai traziu", arată câmpul de selectare a datei și orei
-    setShowDateTimePicker(value === "Mai traziu");
-  };
- 
-  const handleLivrareClick = () => {
-    setLivrareLaDomiciliu(true);
-    setRidicareDinRestaurant(false);
-    setMetodaDeLivrareSelectata(true);
-  };
+    // Trimiterea formularului către server sau altă acțiune
+     // Trimiterea formularului către server sau altă acțiune
 
-  const handleRidicareClick = () => {
-    setLivrareLaDomiciliu(false);
-    setRidicareDinRestaurant(true);
-    setMetodaDeLivrareSelectata(true);
-  };
-  const handlePlataOptionChange = (event) => {
-    const value = event.target.value;
-    if (value === "plataOnline") {
-      setPlataOnlineCuCardul(true);
-    } else {
-      setPlataOnlineCuCardul(false);
+
+    // Afișarea unui mesaj de succes folosind SweetAlert
+    Swal.fire({
+      icon: 'success',
+      title: 'Succes!',
+      text: 'Datele comenzii au fost trimise cu succes!',
+    });
+    const serializedFormData = JSON.stringify(formData);
+    localStorage.setItem("formData",serializedFormData );
+  
+    // Navigarea către pagina de plată în funcție de metoda selectată
+    if (formData.metodaDePlata === 'online') {
+      navigate('/process-checkout');
+    } else if (formData.metodaDePlata === 'numerar') {
+      navigate('/checkout-numerar');
     }
   };
-  const handleTacamuriOptionChange = (event) => {
-    const value = event.target.value;
-    setTacamuriSelectate(value);
-  };
+  
+  const handleGoToPayment = (event) => {
+    handleSubmit(event);
+   
+ }
+  
+ useEffect(() => {
+  // Retrieve data from localStorage when component mounts
+  const storedFormData = localStorage.getItem('formData');
+  if (storedFormData) {
+    setFormData(JSON.parse(storedFormData));
+  }
+}, []);
   
 
   return (
-    <div className='max-w-screen-2xl container mx-auto xl:px-24 px-4 mt-20 text-center'>
-    <ul className="timeline timeline-vertical lg:timeline-horizontal mt-30 mx-auto">
+    <div className='max-w-screen container mx-auto mt-20 text-center '>
+    <ul className="timeline timeline-vertical lg:timeline-horizontal m-10 mx-auto flex justify-center items-center ">
   <li>
     
     <div className="timeline-middle">
@@ -280,6 +342,14 @@ const CartDetails = () => {
   </li>
   <li>
     <hr/>
+    <div className="timeline-middle">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+    </div>
+    <div className="timeline-end timeline-box">Spre Plata</div>
+    <hr/>
+  </li>
+  <li>
+    <hr/>
   </li>
 </ul>
 
@@ -289,7 +359,7 @@ const CartDetails = () => {
       </h2>
 
       <div>
-        <form >
+        <form  >
            {/* nume */}
            <h3 className='font-bold mt-10 mb-10 text-left'>Datele dumneavoastra</h3>
            
@@ -312,7 +382,7 @@ const CartDetails = () => {
     className={`input input-bordered w-full ${errors.nume ? 'input-error' : ''}`}
     onChange={handleInputChange}
   />
-  {errors.nume && <span className="error-message">{errors.nume.message}</span>}
+  {errors.nume && <span className="error-message">{errors.nume}</span>}
 </div>
 {/* prenume */}
 <div className="form-control w-full">
@@ -328,7 +398,7 @@ const CartDetails = () => {
     className={`input input-bordered w-full ${errors.prenume ? 'input-error' : ''}`}
     onChange={handleInputChange}
   />
-  {errors.prenume && <span className="error-message">{errors.prenume.message}</span>}
+  {errors.prenume && <span className="error-message">{errors.prenume}</span>}
 </div>
 {/* email */}
 <div className="form-control w-full">
@@ -350,7 +420,7 @@ const CartDetails = () => {
     className={`input input-bordered w-full ${errors.email ? 'input-error' : ''}`}
     onChange={handleInputChange}
   />
-  {errors.email && <span className="error-message">{errors.email.message}</span>}
+  {errors.email && <span className="error-message">{errors.email}</span>}
 </div>
 {/* numar_telefon */}
 <div className="form-control w-full">
@@ -367,7 +437,7 @@ const CartDetails = () => {
     onChange={handleInputChange}
     required
   />
-  {errors.phone && <span className="error-message">{errors.phone.message}</span>}
+  {errors.phone && <span className="error-message">{errors.phone}</span>}
   </div>
   </div>
   </div>
@@ -425,7 +495,7 @@ const CartDetails = () => {
                     await trigger('adresaLivrare');
                   }}
                 />
-                {errors.adresaLivrare && <span className="error-message">{errors.adresaLivrare.message}</span>}
+                {errors.adresaLivrare && <span className="error-message">{errors.adresaLivrare}</span>}
               </div>
 
               <div className="form-control w-full">
@@ -445,7 +515,7 @@ const CartDetails = () => {
                     await trigger('oras');
                   }}
                 />
-                {errors.oras && <span className="error-message">{errors.oras.message}</span>}
+                {errors.oras && <span className="error-message">{errors.oras}</span>}
               </div>
 
               <div className="form-control w-full">
@@ -465,7 +535,7 @@ const CartDetails = () => {
                     await trigger('codPostal');
                   }}
                 />
-                {errors.codPostal && <span className="error-message">{errors.codPostal.message}</span>}
+                {errors.codPostal && <span className="error-message">{errors.codPostal}</span>}
               </div>
             </div>
           )}
@@ -494,11 +564,11 @@ const CartDetails = () => {
     <h2 className="card-title"><IoCardOutline />Plata</h2>
     <div className="card-actions flex flex-col"> 
       <label className="cursor-pointer label mb-4"> 
-        <input type="radio" {...register('metodaDePlata')} value="plataOnline" className="radio" onChange={handlePlataOptionChange} />
+        <input type="radio" {...register('metodaDePlata')} name="metodaPlata" value="plataOnline" className="radio" onChange={handlePlataOptionChange} />
         <div className="label-text ml-2">Online cu cardul</div>
       </label>
       <label className="cursor-pointer label"> 
-        <input type="radio" {...register('metodaDePlata')} value="plataNumerar" className="radio" onChange={handlePlataOptionChange} />
+        <input type="radio" {...register('metodaDePlata')}name="metodaPlata" value="plataNumerar" className="radio" onChange={handlePlataOptionChange} />
         <div className="label-text ml-2">Numerar </div>
       </label>
     </div>
@@ -570,19 +640,20 @@ const CartDetails = () => {
                   placeholder="optional"
                   ></input>
             </label>
-
 </div>
 </div>
 </div>
 
-<button onClick={handleGoToPayment}>Mergi spre plata online</button>
+<Link to="/cart-page"><button className="btn bg-green text-white m-3">Inapoi la cosul de cumparaturi</button></Link>
+<button
+  onClick={handleGoToPayment}
+  className="btn bg-green text-white mt-3 mb-3"
+>
+Trimite Comanda
+</button>
 
 
 </div>
-
   )
 }
-
-
-
 export default CartDetails

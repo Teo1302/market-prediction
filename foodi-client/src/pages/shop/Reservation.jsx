@@ -1,6 +1,5 @@
-import React from 'react'
-import Rezervare from './Rezervare';
-import { useState,useEffect } from 'react';
+import React from 'react';
+import { useState, useEffect } from 'react';
 import useAxiosSecure from '../../hooks/useAxiosSecure.jsx';
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
@@ -25,9 +24,7 @@ const Reservation = () => {
       useEffect(() => {
         fetchReservations();
       }, [axiosSecure, reservationsEndpoint]);
-    
-    
-    
+
       const handleDelete = async (reservationId) => {
         // Show a confirmation dialog using Swal
         Swal.fire({
@@ -63,9 +60,33 @@ const Reservation = () => {
           }
         });
       };
+
+      const handleAccept = async (reservationId) => {
+        try {
+          const response = await axiosSecure.put(`${reservationsEndpoint}/${reservationId}`);
+          console.log(response.data);
+          // After successful accept, you may want to fetch reservations again
+          fetchReservations();
+          // Show a success message
+          Swal.fire({
+            title: 'Accepted!',
+            text: 'Reservation accepted successfully.',
+            icon: 'success',
+          });
+        } catch (error) {
+          console.error('Error accepting reservation:', error);
+          // Show an error message
+          Swal.fire({
+            title: 'Error!',
+            text: 'An error occurred while accepting the reservation. Please try again.',
+            icon: 'error',
+          });
+        }
+      };
+
   return (
     <div className="max-w-screen-2xl container mx-auto xl:px-24 px-4 mt-20">
-    <h2 className="text-2xl font-semibold my-4">Lista rezervarilor tale</h2>
+    <h2 className="text-2xl font-semibold my-4">Lista rezervarilor</h2>
     {reservations.length > 0 ? (
       <table className="table">
         <thead className="bg-green text-white rounded-sm">
@@ -101,6 +122,12 @@ const Reservation = () => {
                     >
                       <FaTrashAlt />
                     </button>
+                    <button
+                    onClick={() => handleAccept(reservation._id)}
+                    className="btn btn-ghost btn-xs text-green"
+                  >
+                    Accept
+                  </button>
                 </td>
             </tr>
           ))}

@@ -13,7 +13,7 @@ const AddMenu = () => {
   const [menu, loading, refetch] = useMenu();
 
   // image hosting key
-  const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
+  const image_hosting_key = "143b13a4025084141797675ff34fd161";
   console.log(image_hosting_key)
   const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
   const onSubmit = async (data) => {
@@ -62,7 +62,7 @@ const AddMenu = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="form-control w-full">
             <label className="label">
-              <span className="label-text">Recipe Name*</span>
+              <span className="label-text">Recipe Name</span>
             </label>
             <input
             // trebuie ca asta register("name" sa fie la fel ca ce avem in baza de date
@@ -78,7 +78,7 @@ const AddMenu = () => {
             {/* categories */}
             <div className="form-control w-full my-6">
               <label className="label">
-                <span className="label-text">Category*</span>
+                <span className="label-text">Category</span>
               </label>
               <select
                 {...register("category", { required: true })}
@@ -89,11 +89,11 @@ const AddMenu = () => {
                   Select a category
                   {/* same category ca cele din menu.json */}
                 </option>
-                <option value="salad">Salad</option>
+                <option value="salata">Salata</option>
                 <option value="pizza">Pizza</option>
-                <option value="soup">Soup</option>
-                <option value="dessert">dessert</option>
-                <option value="drinks">Drinks</option>
+                <option value="paste">Paste</option>
+                <option value="desert">Desert</option>
+                <option value="bauturi">Bauturi</option>
                 <option value="popular">Popular</option>
               </select>
             </div>
@@ -101,7 +101,7 @@ const AddMenu = () => {
             {/* prices */}
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Price*</span>
+                <span className="label-text">Price</span>
               </label>
               <input
                 type="number"

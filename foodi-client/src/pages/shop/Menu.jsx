@@ -134,13 +134,13 @@ const Menu = () => {
               onClick={() => filterItems("all")}
               className={selectedCategory === "all" ? "active" : ""}
             >
-              All
+             Vezi tot meniul nostru
             </button>
             <button
-              onClick={() => filterItems("salad")}
-              className={selectedCategory === "salad" ? "active" : ""}
+              onClick={() => filterItems("salata")}
+              className={selectedCategory === "salata" ? "active" : ""}
             >
-              Salad
+              Salate
             </button>
             <button
               onClick={() => filterItems("pizza")}
@@ -149,22 +149,22 @@ const Menu = () => {
               Pizza
             </button>
             <button
-              onClick={() => filterItems("soup")}
-              className={selectedCategory === "soup" ? "active" : ""}
+              onClick={() => filterItems("paste")}
+              className={selectedCategory === "paste" ? "active" : ""}
             >
-              Soups
+             Paste
             </button>
             <button
-              onClick={() => filterItems("dessert")}
-              className={selectedCategory === "dessert" ? "active" : ""}
+              onClick={() => filterItems("desert")}
+              className={selectedCategory === "desert" ? "active" : ""}
             >
-              Desserts
+              Deserturi
             </button>
             <button
-              onClick={() => filterItems("drinks")}
-              className={selectedCategory === "drinks" ? "active" : ""}
+              onClick={() => filterItems("bauturi")}
+              className={selectedCategory === "bauturi" ? "active" : ""}
             >
-              Drinks
+              Bauturi
             </button>
           </div>
 

@@ -2,10 +2,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 const categoryItems=[
-    {id:1, title:"FastFood",des:"(20 feluri)", image:"images/home/categ1.jpg"},
-    {id:2, title:"Mic dejun",des:"(10 feluri)", image:"images/home/categ2.jpg"},
-    {id:3, title:"Desert",des:"(5 feluri)", image:"images/home/categ3.jpg"},
-    {id:4, title:"Altele",des:"(30 feluri)", image:"images/home/categ4.jpg"},
+    {id:1, title:"Pizza",des:"(10 feluri)",route: "/pizza", image:"images/home/poza_pizza_categ.png"},
+    {id:2, title:"Paste",des:"(8 feluri)",route: "/paste", image:"images/home/paste_categ.jpg"},
+    {id:3, title:"Desert",des:"(6 feluri)",route: "/desert", image:"images/home/categ3.jpg"},
+    {id:4, title:"Bauturi",des:"(11 feluri)",route: "/bauturi", image:"images/home/categ4.jpg"},
 ]
 const Categories = () => {
   return (
@@ -23,15 +23,15 @@ const Categories = () => {
             categoryItems.map((item,i)=>(
                 <div key={i} className='shadow-lg rounded-md bg-white py-6 px-5 w-72 mx-auto text-center cursor-pointer hover:translate-y-4 duration-300 transition-all'>
                     <div className='flex w-full mx-auto items-center justify-center'>
-                        <img src={item.image} alt="" className='bg-[#C1F1C6] p-5 rounded-full w-28 h-28'/>
+                        <img src={item.image} alt="" className='bg-[#C1F1C6] p-5 rounded-full w-30 h-30'/>
                     </div>
                     <div className='mt-5 space-y-1'>
                          <h5>{item.title}</h5>
                          <p>{item.des}</p>
                          
-                <button className='btn bg-green px-4 py-2 text-white rounded-full'>
-                  Vezi Meniu
-                </button>
+                         <Link to={item.route} className='btn bg-green px-4 py-2 text-white rounded-full'>
+                Vezi Meniu
+              </Link>
 
                     </div>
 

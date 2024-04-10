@@ -44,6 +44,8 @@ const paymentRoutes = require("./api/routes/paymentRoutes");
 const reservationRoutes = require('./api/routes/reservationRoutes');
 const favoriteRoutes = require('./api/routes/favoriteRoutes');
 
+
+
 //const adminStats =  require('./api/routes/adminStats');
 //const orderStats = require('./api/routes/orderStats');
 
@@ -55,7 +57,11 @@ app.use('/users', userRoutes);
 app.use("/payments", paymentRoutes);
 app.use('/rezervare', reservationRoutes);
 app.use('/vizualizare-rezervari', reservationRoutes);
+app.use('/rezervare-client', reservationRoutes);
 app.use('/favorite',favoriteRoutes);
+
+
+
 //app.use('/admin-stats', adminStats);
 //app.use('/order-stats', orderStats);
 

@@ -16,61 +16,62 @@ const Cards = ({ item }) => {
   const [cart, refetch] = useCart();
   const [isInFavorites, setIsInFavorites] = useState(false);
 
-
+  const showAddedToCartAlert = () => {
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: "Produs adăugat în coș!",
+      showConfirmButton: false,
+      timer: 1500
+    });
+  };
 
 //add to cart bttn
- const handleAddtoCart=(item) => {
-  console.log("btn is clicked", item)
-  if(user && user?.email){
-     const cartItem={
-      menuItemId: _id,
-      name,
-      quatity: 1,
-      image,
-      price,
-      email:user.email,
-       };
-       //console.log(cartItem)
-  
-     fetch('http://localhost:6001/carts',{
-      method:"POST",
-      headers:{
-        'content-type':'application/json'
+const handleAddtoCart = (item) => {
+  console.log("btn is clicked", item);
+  if (user && user?.email) {
+    const cartItem = {
+      menuItemId: item._id, // Modificare aici pentru a accesa corect _id-ul elementului
+      name: item.name,
+      quantity: 1, // Setăm cantitatea la 1 când adăugăm produsul în coș
+      image: item.image,
+      price: item.price,
+      email: user.email,
+    };
+
+    fetch("http://localhost:6001/carts", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
       },
-      body:JSON.stringify(cartItem)
-     })
-     .then((res) => res.json())
-
-     .then((data)=> {
-      //console.log(data)
-      if (data.insertedId){
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Your work has been saved",
-          showConfirmButton: false,
-          timer: 1500
-        });
+      body: JSON.stringify(cartItem),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.insertedId) {
+          showAddedToCartAlert();
+        }
+      })
+      .catch((error) => {
+        console.error("Error adding to cart:", error);
+      });
+  } else {
+    Swal.fire({
+      title: "Please Login",
+      text: "Without an account you will not be able to add products",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Signup Now!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/signup", { state: { from: location } });
       }
-      });
-    }
-    else {
-      Swal.fire({
-        title: "Please Login",
-        text: "Without an account you will not be able to add products",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Signup Now!"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate('/signup',{state:{from:location}})
-          }
-      });
-    }
+    });
+  }
+};
 
-  };
   const handleAddToFavorite = () => {
     if (!user || !user.email) {
       Swal.fire({
@@ -142,12 +143,12 @@ const Cards = ({ item }) => {
       </Link>
       <div className="card-body">
        <Link to={`/menu/${item._id}`}><h2 className="card-title">{item.name}!</h2></Link>
-        <p>Description of the item</p>
+       <p>{item.recipe}</p>
         <div className="card-actions justify-between items-center mt-2">
           <h5 className="font-semibold">
-            <span className="text-sm text-red">$ </span> {item.price}
+          <span className="text-sm text-black">{item.price} lei </span> 
           </h5>
-          <button onClick={() => handleAddtoCart(item)} className="btn bg-green text-white">Add to Cart </button>
+          <button onClick={() => handleAddtoCart(item)} className="btn bg-green text-white">Adauga in Cos </button>
         </div>
       </div>
     </div>

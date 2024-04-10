@@ -14,9 +14,13 @@ const Navbar = () => {
   const [isSticky, setSticky] = useState(false);
   const {user, loading} = useAuth();
   const [cart, refetch] = useCart();
+  const [cartItemCount, setCartItemCount] = useState(0);
+  
+  useEffect(() => {
+   
+    setCartItemCount(cart.length);
+  }, [cart]);
 
-  
-  
   useEffect( () => {
     const handleScroll=() => {
       const offset=window.scrollY;
@@ -43,8 +47,11 @@ const Navbar = () => {
           <summary>Meniu</summary>
           <ul className="p-2">
             <li><a href="/menu">Meniul Complet</a></li>
-            <li><a>Paste</a></li>
+            <li><a href="/paste">Paste</a></li>
             <li><a href="/pizza">Pizza</a></li>
+            <li><a href="/desert">Desert</a></li>
+            <li><a href="/bauturi">Bauturi</a></li>
+            
           </ul>
         </details>
       </li>
@@ -75,7 +82,7 @@ const Navbar = () => {
     </div>
     <a  href="/">
       <img src={logo} alt="" style={{
-          width: '100px', // Ajustați dimensiunea dorită
+          width: '100px', 
           height: 'auto'
         }}/>
     </a>

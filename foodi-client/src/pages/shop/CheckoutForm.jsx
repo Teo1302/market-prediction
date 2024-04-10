@@ -11,6 +11,8 @@ import { FaShoppingCart } from "react-icons/fa";
 import useCart from "../../hooks/useCart";
 import { AuthContext } from "../../contexts/AuthProvider";
 
+import Swal from 'sweetalert2';
+
 const CheckoutForm = ({price, cart}) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -21,6 +23,56 @@ const CheckoutForm = ({price, cart}) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [cartData, refetch] = useCart();
+  const [formData, setFormData] = useState({
+    nume: '',
+    email: '',
+    prenume: '',
+    phone: '',
+    tipLivrare: '',
+    adresaLivrare: '', 
+    oras: '', 
+    codPostal: '',
+    metodaDePlata: '',
+    momentPrimireComanda: '',
+    tacamuri: '',
+    instructiuniSpeciale: ''
+  });
+  const [livrareLaDomiciliu, setLivrareLaDomiciliu] = useState(false);
+
+  useEffect(() => {
+    // Retrieve data from localStorage when component mounts
+    const storedFormData = localStorage.getItem('formData');
+    if (storedFormData) {
+      setFormData(JSON.parse(storedFormData));
+    }
+  }, []);
+
+  const handleLivrareClick = () => {
+    setLivrareLaDomiciliu(true);
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      tipLivrare: 'domiciliu'
+    }));
+  };
+
+  const handleRidicareClick = () => {
+    setLivrareLaDomiciliu(false);
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      tipLivrare: 'ridicare'
+    }));
+  };
+  const placeOrder = () => {
+    // Aici puteți adăuga logica pentru a plasa comanda
+  
+    // Exemplu simplu de afișare a SweetAlert
+    Swal.fire({
+      icon: 'success',
+      title: 'Comanda a fost plasată cu succes!',
+      showConfirmButton: false,
+      timer: 1500 // Afiseaza alerta timp de 1.5 secunde
+    });
+  } 
 
   console.log(user.email)
   if (!user) {
@@ -39,11 +91,16 @@ const CheckoutForm = ({price, cart}) => {
       setClientSecret(res.data.clientSecret);
     });
   }, [cart, axiosSecure]);
+
   const calculateShippingFee = () => {
-    if (totalPrice >= 50) {
-      return 'Gratis';
+    if (livrareLaDomiciliu) {
+      if (totalPrice >= 50) {
+        return 'Gratis';
+      } else {
+        return '25 lei';
+      }
     } else {
-      return '25 lei';
+      return 'Gratis'; // Taxa de livrare este 0 pentru ridicarea din restaurant
     }
   };
 
@@ -155,7 +212,32 @@ const CheckoutForm = ({price, cart}) => {
 
 
       {/* right side */}
-      <div className='md:w-1/2 w-full space-y-3 card shrink-0 max-w-sm shadow-2xl bg-base-100 px-4 py-8'> 
+      <div className="md:w-1/2 space-y-3">
+        <div className="card w-full bg-base-100 shadow-xl mb-8" style={{ marginTop: '40px' }}>
+          <div className="card-body">
+            <h2 className="card-title">Date despre Comanda Dvs</h2>
+            <p><strong>Nume:</strong> {formData.nume}</p>
+            <p><strong>Prenume:</strong> {formData.prenume}</p>
+            <p><strong>Email:</strong> {formData.email}</p>
+            <p><strong>Nr_telefon:</strong> {formData.phone}</p>
+            <p><strong>Tip Livrare:</strong> {formData.tipLivrare}</p>
+            {livrareLaDomiciliu && (
+              <>
+                <p><strong>Adresa Livrare:</strong> {formData.adresaLivrare}</p>
+                <p><strong>Oras:</strong> {formData.oras}</p>
+                <p><strong>Cod Postal:</strong> {formData.codPostal}</p>
+              </>
+            )}
+            <p><strong>Metoda De Plata:</strong> {formData.metodaDePlata}</p>
+            <p><strong>Moment Primire Comanda:</strong> {formData.momentPrimireComanda}</p>
+            <p><strong>Tacamuri:</strong> {formData.tacamuri}</p>
+            <p><strong>Instructiuni Speciale:</strong> {formData.instructiuniSpeciale}</p>
+            <Link to="/cart-details">
+              <button className="btn bg-green text-white m-3">Inapoi la Completare Detalii Comanda </button>
+            </Link>
+            </div> 
+            </div>
+      <div className=' w-full space-y-3 card shrink-0 max-w-sm shadow-2xl bg-base-120 px-4 py-8'> 
       <h4 className="text-lg font-semibold">Proccess you Payment!</h4>
       <h5 className='font-medium'>Credit/Debit Card </h5>
       {/* stripe form */}
@@ -202,6 +284,8 @@ const CheckoutForm = ({price, cart}) => {
 
 
     </div>
+    </div>
+    
   )
 }
 

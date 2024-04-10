@@ -24,6 +24,11 @@ import Favorite from "../components/Favorite";
 import Contact from "../components/Contact";
 import Prezentare from "../components/Prezentare";
 import Pizza from  "../components/Pizza";
+import MesajeClienti from "../pages/dashboard/admin/MesajeClienti";
+import ClientRezervare from "../pages/shop/ClientRezervare";
+import Paste from  "../components/Paste";
+import Desert from  "../components/Desert";
+import Bauturi from  "../components/Bauturi";
 
 const router = createBrowserRouter([
   {
@@ -67,8 +72,8 @@ const router = createBrowserRouter([
         element: <Oferta/>
       },
       {
-        path: "/vizualizare-rezervari",
-        element: <Reservation/>
+        path: "/rezervare-client",
+        element: <PrivateRouter><ClientRezervare/></PrivateRouter>
       },
       {
         path: "/checkout-numerar",
@@ -89,6 +94,18 @@ const router = createBrowserRouter([
       {
         path: "/pizza",
         element: <Pizza/>
+      },
+      {
+        path: "/paste",
+        element: <Paste/>
+      },
+      {
+        path: "/desert",
+        element: <Desert/>
+      },
+      {
+        path: "/bauturi",
+        element: <Bauturi/>
       }
 
     ]
@@ -101,6 +118,7 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login/>
   },
+ 
   {
     path: 'dashboard',
     element: <PrivateRouter><DashboardLayout/></PrivateRouter>,
@@ -120,8 +138,16 @@ const router = createBrowserRouter([
       {
         path: "manage-items",
         element: <ManageItems/>
+      }, 
+      {
+        path: "mesaje-clienti",
+        element: <MesajeClienti/>
       },
       {
+        path: "vizualizare-rezervari",
+        element: <Reservation/>
+      },
+        {
         path: "update-menu/:id",
         element: <UpdateMenu/>,
         loader: ({params}) => fetch(`http://localhost:6001/menu/${params.id}`)

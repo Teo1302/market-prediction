@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaFacebookF, FaGithub, FaGoogle, FaRegUser } from "react-icons/fa";
+import {  FaGoogle, FaRegUser } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import Modal from "./Modal";
 import { AuthContext } from "../contexts/AuthProvider";
@@ -75,15 +75,15 @@ const Signup = () => {
     <div className="max-w-md bg-white shadow w-full mx-auto flex items-center justify-center my-20">
       <div className="mb-5">
         <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
-          <h3 className="font-bold text-lg">Please Create An Account!</h3>
+          <h3 className="font-bold text-lg">Creare cont Utilizator nou</h3>
           {/* name */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Name</span>
+              <span className="label-text">Nume</span>
             </label>
             <input
               type="name"
-              placeholder="Your name"
+              placeholder="Introduceti numele dvs."
               className="input input-bordered"
               {...register("name")}
             />
@@ -96,7 +96,7 @@ const Signup = () => {
             </label>
             <input
               type="email"
-              placeholder="email"
+              placeholder="Introduceti email dvs."
               className="input input-bordered"
               {...register("email")}
             />
@@ -105,19 +105,14 @@ const Signup = () => {
           {/* password */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Password</span>
+              <span className="label-text">Parola</span>
             </label>
             <input
               type="password"
-              placeholder="password"
+              placeholder="Introduceti parola "
               className="input input-bordered"
               {...register("password")}
             />
-            <label className="label">
-              <a href="#" className="label-text-alt link link-hover mt-2">
-                Forgot password?
-              </a>
-            </label>
           </div>
 
           {/* error message */}
@@ -146,13 +141,7 @@ const Signup = () => {
           >
             <FaGoogle />
           </button>
-          <button className="btn btn-circle hover:bg-green hover:text-white">
-            <FaFacebookF />
-          </button>
-          <button className="btn btn-circle hover:bg-green hover:text-white">
-            <FaGithub />
-          </button>
-        </div>
+               </div>
       </div>
     </div>
   );

@@ -1,12 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaUtensils } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useAxiosPublic from '../../hooks/useAxiosPublic.jsx';
 import useAxiosSecure from '../../hooks/useAxiosSecure.jsx';
 import { Link } from 'react-router-dom';
-import Reservation from './Reservation.jsx';
+import { AuthContext } from "../../contexts/AuthProvider";
+
 
 
 
@@ -15,6 +17,7 @@ const Rezervare = () => {
   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   // Reservation API endpoint
   const reservationEndpoint = '/rezervare'; 
@@ -37,7 +40,7 @@ const Rezervare = () => {
             showConfirmButton: false,
             timer: 2000,
           });
-          navigate('/vizualizare-rezervari');
+          navigate('/rezervare-client');
         } else {
           // Show an error message if the request was not successful
           Swal.fire({
@@ -115,27 +118,29 @@ const Rezervare = () => {
 </div>
 {/* email */}
 <div className="form-control w-full">
-  <label className="label">
-    <span className="label-text"><b>E-mail</b></span>
-  </label>
-  <input
-    type="email" 
-    {...register('email', {
-      required: 'Acest câmp este obligatoriu',
-      pattern: {
-        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        message: 'Introduceți o adresă de email validă',
-      },
-    })}
-    placeholder="Introduceti adresa de email"
-    className={`input input-bordered w-full ${errors.email ? 'input-error' : ''}`}
-    onBlur={async () => {
-      // Activează funcția de validare când utilizatorul părăsește câmpul
-      await trigger('email');
-    }}
-  />
-  {errors.email && <span className="error-message">{errors.email.message}</span>}
-</div>
+            <label className="label">
+              <span className="label-text"><b>E-mail</b></span>
+            </label>
+            <input
+              type="email"
+              {...register('email', {
+                required: 'Acest câmp este obligatoriu',
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: 'Introduceți o adresă de email validă',
+                },
+              })}
+              // Set default value to user's email
+              defaultValue={user?.email} // Assuming email is in user object
+              placeholder="Introduceti adresa de email"
+              className={`input input-bordered w-full ${errors.email ? 'input-error' : ''}`}
+              onBlur={async () => {
+                // Activează funcția de validare când utilizatorul părăsește câmpul
+                await trigger('email');
+              }}
+            />
+            {errors.email && <span className="error-message">{errors.email.message}</span>}
+          </div>
 {/* numar_telefon */}
 <div className="form-control w-full">
   <label className="label">

@@ -1,75 +1,74 @@
 [
     {
-        "_id": "642c155b2c4774f05c36eeaa",
-        "name": "Haddock",
-        "recipe": "Chargrilled fresh tuna steak (served medium rare) on classic Niçoise salad with French beans.",
-        "image": "/images/recipes/img1.png",
-        "category": "salad",
+        "_id": "742c155b2c4774f05c36eeaa",
+        "name": "Pizza Capriciosa",
+        "recipe": "Contine: branza mozzarella, sunca italiana, ciuperci, anghinare si rosii",
+        "image": "/images/recipes/capriciosa.jpg",
+        "category": "pizza",
         "price": 14.7
     },
     {
-        "_id": "642c155b2c4774f05c36eeb9",
-        "name": "Haddock",
-        "recipe": "Chargrilled fresh tuna steak (served medium rare) on classic Niçoise salad with French beans.",
-        "image": "/images/recipes/img2.png",
-        "category": "drinks",
-        "price": 14.7
+        "_id":"642c155b2c4774f05c36ee95",
+        "name":"Paste Integrale alle Verdure",
+        "recipe":"Paste integrale (fusilli), dovlecel, vânata, broccoli, ciuperci champignon, rosii cherry, ceapa,usturoi, busuioc, patrunjel 450 g",
+        "image":"/images/recipes/Paste Integrale alle Verdure.png",
+        "category":"popular",
+        "price":"35.0"
     },
     {
-        "_id": "642c155b2c4774f05c36ee7c",
-        "name": "Escalope de Veau",
-        "recipe": "Roasted duck breast (served pink) with gratin potato and a griottine cherry sauce",
-        "image": "/images/recipes/img1.png",
-        "category": "popular",
-        "price": 14.5
+        "_id":"642c155b2c4774f05c36eea9",
+        "name":"Pizza Casei",
+        "recipe":"Sos de rosii, porumb, sunca, salam,ciuperci, mozzarella, ardei gras, masline 750 g",
+        "image":"/images/recipes/pizza_casei.png",
+        "category":"popular",
+        "price":"40.0"
+    },
+    { "_id":"642c155b2c4774f05c36ee74",
+    "name":"Salata de cruditati",
+    "recipe":"Salata iceberg, ardei, rosii, castraveti, porumb, masline, lamaie stoarsa, ulei de masline, otet balsamic 450g",
+    "image":"/images/recipes/salata_cruditati.png",
+    "category":"popular",
+    "price":"22.0"},
+    {
+        "_id":"642c155b2c4774f05c36ee99",
+        "name":"Tarta Cirese",
+        "recipe":"Branza de vaci, lapte, ou, cirese, faina, crema de mascrapone 200 g",
+        "image":"/images/recipes/tarta_cirese.png",
+        "category":"popular",
+        "price":"30.0" 
     },
     {
-        "_id": "642c155b2c4774f05c36ee88",
-        "name": "Escalope de Veau",
-        "recipe": "Pan roasted haddock fillet wrapped in smoked French bacon with pea purée and tomato and chive vinaigrette",
-        "image": "/images/recipes/img1.png",
-        "category": "dessert",
-        "price": 12.5
+        "_id":"642c155b2c4774f05c36ee7e",
+        "name":"Pizza Greceasca",
+        "recipe":"Sos de rosii, porumb, pui crocant, ciuperci, mozzarella, ardei gras 750 gr",
+        "image":"/images/recipes/pizza_greceasca.png",
+        "category":"popular",
+        "price":"35.0"
     },
     {
-        "_id": "642c155b2c4774f05c36ee7a",
-        "name": "Roast Duck Breast",
-        "recipe": "Roasted duck breast (served pink) with gratin potato and a griottine cherry sauce",
-        "image": "/images/recipes/img2.png",
-        "category": "popular",
-        "price": 14.5
+        "_id":"642c155b2c4774f05c36eeaa",
+        "name":"Salata Caesar",
+        "recipe":"Salată iceberg, ou, roșii cherry, parmezan, sos caesar, piept de pui la grătar, crutoane - 530 gr",
+        "image":"/images/recipes/img1.png",
+        "category":"popular",
+        "price":"39.0"
+    },
+   
+    {
+        "_id":"642c155b2c4774f05c36eeb3",
+        "name":"Mac `n` Cheese",
+        "recipe":"Macaroni, sos de branza, parmezan\n450 g",
+        "image":"/images/recipes/paste_mac.png",
+        "category":"popular",
+        "price":"34.0"
     },
     {
-        "_id": "642c155b2c4774f05c36ee74",
-        "name": "Roast Duck Breast",
-        "recipe": "Roasted duck breast (served pink) with gratin potato and a griottine cherry sauce",
-        "image": "/images/recipes/img3.png",
-        "category": "popular",
-        "price": 14.5
-    },
-    {
-        "_id": "642c155b2c4774f05c36ee712",
-        "name": "Roast Duck Breast",
-        "recipe": "Roasted duck breast (served pink) with gratin potato and a griottine cherry sauce",
-        "image": "/images/recipes/img1.png",
-        "category": "popular",
-        "price": 14.5
-    },
-    {
-        "_id": "642c155b2c4774f05c36ee7x",
-        "name": "Roast Duck Breast",
-        "recipe": "Roasted duck breast (served pink) with gratin potato and a griottine cherry sauce",
-        "image": "/images/recipes/img2.png",
-        "category": "popular",
-        "price": 14.5
-    },
-    {
-        "_id": "642c155b2c4774f05c36ee8c",
-        "name": "Escalope de Veau",
-        "recipe": "Pan roasted haddock fillet wrapped in smoked French bacon with pea purée and tomato and chive vinaigrette",
-        "image": "/images/recipes/img3.png",
-        "category": "dessert",
-        "price": 12.5
+        "_id":"642c155b2c4774f05c36ee98",
+        "name":"Fanta Portocale",
+        "recipe":"Fanta Portocale 500 ml",
+        "image":"/images/recipes/fanta.png",
+        "category":"popular",
+        "price":"10.0"
     },
     {
         "_id": "642c155b2c4774f05c36ee94",
@@ -92,7 +91,7 @@
         "name": "Chicken and Walnut Salad",
         "recipe": "Pan roasted pork belly with gratin potato, braised Savoy cabbage, apples, thyme and calvados jus",
         "image": "/images/recipes/img3.png",
-        "category": "salad",
+        "category": "salata",
         "price": 13.5
     },
     {
@@ -100,7 +99,7 @@
         "name": "Escalope de Veau",
         "recipe": "Pan roasted haddock fillet wrapped in smoked French bacon with pea purée and tomato and chive vinaigrette",
         "image": "/images/recipes/img1.png",
-        "category": "soup",
+        "category": "supa",
         "price": 12.5
     },
     {
@@ -108,7 +107,7 @@
         "name": "Chicken and Walnut Salad",
         "recipe": "Pan roasted pork belly with gratin potato, braised Savoy cabbage, apples, thyme and calvados jus",
         "image": "/images/recipes/img2.png",
-        "category": "dessert",
+        "category": "desert",
         "price": 13.5
     },
     {
@@ -116,7 +115,7 @@
         "name": "Escalope de Veau",
         "recipe": "Pan roasted haddock fillet wrapped in smoked French bacon with pea purée and tomato and chive vinaigrette",
         "image": "/images/recipes/img3.png",
-        "category": "dessert",
+        "category": "desert",
         "price": 12.5
     },
     {
@@ -132,7 +131,7 @@
         "name": "Tuna Niçoise",
         "recipe": "Warm goats cheese and roasted vegetable salad with black olive tapenade crostini",
         "image": "/images/recipes/img2.png",
-        "category": "offered",
+        "category": "bauturi",
         "price": 10.5
     },
     {
@@ -140,7 +139,7 @@
         "name": "Roast Duck Breast",
         "recipe": "Roasted duck breast (served pink) with gratin potato and a griottine cherry sauce",
         "image": "/images/recipes/img3.png",
-        "category": "dessert",
+        "category": "desert",
         "price": 14.5
     },
     {
@@ -148,7 +147,7 @@
         "name": "Chicken and Walnut Salad",
         "recipe": "Pan roasted pork belly with gratin potato, braised Savoy cabbage, apples, thyme and calvados jus",
         "image": "/images/recipes/img1.png",
-        "category": "salad",
+        "category": "salata",
         "price": 13.5
     },
     {
@@ -156,7 +155,7 @@
         "name": "Fish Parmentier",
         "recipe": "Sautéed breaded veal escalope with watercress, lemon and veal jus.",
         "image": "/images/recipes/img2.png",
-        "category": "salad",
+        "category": "salata",
         "price": 9.5
     },
     {
@@ -164,7 +163,7 @@
         "name": "Chicken and Walnut Salad",
         "recipe": "Pan roasted pork belly with gratin potato, braised Savoy cabbage, apples, thyme and calvados jus",
         "image": "/images/recipes/img3.png",
-        "category": "dessert",
+        "category": "desert",
         "price": 13.5
     },
     {
@@ -172,23 +171,24 @@
         "name": "Chicken and Walnut Salad",
         "recipe": "Pan roasted pork belly with gratin potato, braised Savoy cabbage, apples, thyme and calvados jus",
         "image": "/images/recipes/img1.png",
-        "category": "offered",
+        "category": "pizza",
         "price": 13.5
     },
-    {
-        "_id": "642c155b2c4774f05c36ee7f",
-        "name": "Roasted Pork Belly",
-        "recipe": "Roasted duck breast (served pink) with gratin potato and a griottine cherry sauce",
-        "image": "/images/recipes/img2.png",
-        "category": "popular",
-        "price": 14.5
+    { 
+        "_id": "642c155b2c4774f05c36ee82",
+        "name":"Mini papanasi cu smantana si afine",
+        "recipe" : "Branza de vaci, faina, zahar, condimente, afine 300 g",
+        "image" :"/images/recipes/papa_afi.png",
+        "category":"popular",
+        "price":30
+    
     },
     {
         "_id": "642c155b2c4774f05c36eea8",
         "name": "Chicken and Walnut Salad",
         "recipe": "Pan roasted pork belly with gratin potato, braised Savoy cabbage, apples, thyme and calvados jus",
         "image": "/images/recipes/img3.png",
-        "category": "salad",
+        "category": "salata",
         "price": 13.5
     },
     {
@@ -196,7 +196,7 @@
         "name": "Haddock",
         "recipe": "Chargrilled fresh tuna steak (served medium rare) on classic Niçoise salad with French beans.",
         "image": "/images/recipes/img1.png",
-        "category": "drinks",
+        "category": "bauturi",
         "price": 14.7
     },
     {
@@ -204,7 +204,7 @@
         "name": "Roast Duck Breast",
         "recipe": "Roasted duck breast (served pink) with gratin potato and a griottine cherry sauce",
         "image": "/images/recipes/img2.png",
-        "category": "offered",
+        "category": "pizza",
         "price": 14.5
     },
     {
@@ -212,7 +212,7 @@
         "name": "Fish Parmentier",
         "recipe": "Sautéed breaded veal escalope with watercress, lemon and veal jus.",
         "image": "/images/recipes/img3.png",
-        "category": "dessert",
+        "category": "desert",
         "price": 9.5
     },
     {
@@ -220,7 +220,7 @@
         "name": "Chicken and Walnut Salad",
         "recipe": "Pan roasted pork belly with gratin potato, braised Savoy cabbage, apples, thyme and calvados jus",
         "image": "/images/recipes/img1.png",
-        "category": "soup",
+        "category": "supa",
         "price": 13.5
     },
     {
@@ -228,7 +228,7 @@
         "name": "Chicken and Walnut Salad",
         "recipe": "Pan roasted pork belly with gratin potato, braised Savoy cabbage, apples, thyme and calvados jus",
         "image": "/images/recipes/img2.png",
-        "category": "dessert",
+        "category": "desert",
         "price": 13.5
     },
     {
@@ -236,7 +236,7 @@
         "name": "Escalope de Veau",
         "recipe": "Pan roasted haddock fillet wrapped in smoked French bacon with pea purée and tomato and chive vinaigrette",
         "image": "/images/recipes/img3.png",
-        "category": "dessert",
+        "category": "desert",
         "price": 12.5
     },
     {
@@ -244,7 +244,7 @@
         "name": "Fish Parmentier",
         "recipe": "Sautéed breaded veal escalope with watercress, lemon and veal jus.",
         "image": "/images/recipes/img2.png",
-        "category": "salad",
+        "category": "salata",
         "price": 9.5
     },
     {
@@ -260,7 +260,7 @@
         "name": "Fish Parmentier",
         "recipe": "Sautéed breaded veal escalope with watercress, lemon and veal jus.",
         "image": "/images/recipes/img3.png",
-        "category": "soup",
+        "category": "supa",
         "price": 9.5
     },
     {
@@ -287,14 +287,7 @@
         "category": "soup",
         "price": 14.7
     },
-    {
-        "_id": "642c155b2c4774f05c36ee7e",
-        "name": "Fish Parmentier",
-        "recipe": "Roasted duck breast (served pink) with gratin potato and a griottine cherry sauce",
-        "image": "/images/recipes/img1.png",
-        "category": "popular",
-        "price": 14.5
-    },
+  
     {
         "_id": "642c155b2c4774f05c36ee8b",
         "name": "Chicken and Walnut Salad",

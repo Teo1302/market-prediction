@@ -7,6 +7,8 @@ import logo from "/logo.jpg";
 import Login from "/src/components/Login"
 import useAuth from "../hooks/useAuth"
 import useAdmin from "../hooks/useAdmin"
+import { LuMessageCircle } from "react-icons/lu";
+
 
 const sharedLinks = (
   <>
@@ -20,9 +22,6 @@ const sharedLinks = (
     </li>
     <li>
         <Link to="/menu"><FaLocationArrow/> Orders Tracking</Link>
-    </li>
-    <li>
-        <Link to="/menu"><FaQuestionCircle/> Customer Support</Link>
     </li>
   </>
 );
@@ -73,8 +72,8 @@ const DashboardLayout = () => {
             </Link>
           </li>
           <li>
-            <Link to="/dashboard">
-              <FaShoppingBag /> Manage Bookings
+            <Link to="/dashboard/vizualizare-rezervari">
+              <FaShoppingBag /> Gestiune Rezervari
             </Link>
           </li>
           <li>
@@ -88,9 +87,14 @@ const DashboardLayout = () => {
               <FaEdit /> Manage Items
             </Link>
           </li>
-          <li className="mb-3">
+          <li className="mb-1">
             <Link to="/dashboard/users">
               <FaUsers /> All Users
+            </Link>
+          </li>
+          <li >
+            <Link to="/dashboard/mesaje-clienti">
+            <LuMessageCircle />Mesaje Clienti
             </Link>
           </li>
 

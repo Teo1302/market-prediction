@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaFacebookF, FaGithub, FaGoogle } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../contexts/AuthProvider";
 import axios from "axios";
@@ -19,17 +19,17 @@ const Login = () => {
 
   const from = location.state?.from?.pathname || "/";
   
-  const handleFacebookLogin = () => {
-    signInWithPopup(auth, new FacebookAuthProvider())
-      .then((result) => {
-        // Aici puteți gestiona rezultatul autentificării cu Facebook
-        console.log(result);
-      })
-      .catch((error) => {
-        // Aici puteți gestiona erorile survenite în timpul autentificării cu Facebook
-        console.error(error);
-      });
-  };
+  // const handleFacebookLogin = () => {
+  //   signInWithPopup(auth, new FacebookAuthProvider())
+  //     .then((result) => {
+  //       // Aici puteți gestiona rezultatul autentificării cu Facebook
+  //       console.log(result);
+  //     })
+  //     .catch((error) => {
+  //       // Aici puteți gestiona erorile survenite în timpul autentificării cu Facebook
+  //       console.error(error);
+  //     });
+  // };
   
   //react hook form
   const {
@@ -165,13 +165,7 @@ const Login = () => {
         <button onClick={handleRegister} className="btn btn-circle hover:bg-green hover:text-white">
           <FaGoogle />
         </button>
-        <button className="btn btn-circle hover:bg-green hover:text-white">
-          <FaFacebookF />
-        </button>
-        <button className="btn btn-circle hover:bg-green hover:text-white">
-          <FaGithub />
-        </button>
-      </div>
+            </div>
     </div>
   </div>
   )
