@@ -20,9 +20,9 @@ function Banner() {
           </Link>
           
         </div>
-        {/* images */}
+        {/* imagini */}
         <div className='md:w-1/2'>
-           <img src="pozaPrincipala.jpg" alt="poza"></img> 
+           <img src="pozaPrincipala2.jpg" alt="poza"></img> 
         </div>
       </div>
     </div>

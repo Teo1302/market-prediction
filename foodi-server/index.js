@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config()
 const cors = require('cors')
 
-// This is your test secret API key.
+// secret API key.
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 app.use(express.static("public"));
@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cors());
 
 
-//MONGO DB CONFIG USING MONGOOSE
+//MONGODB CONFIG USING MONGOOSE
 //teodoraradu36
 //fLlmGqiyynfJtssj
 
@@ -25,7 +25,7 @@ mongoose
     )
     .catch((error) => console.log("Error connecting to MongoDB", error));
 
-//jwt authentification
+//jwt autentif
 
 app.post('/jwt', async (req, res) => {
     const user = req.body;
@@ -36,16 +36,16 @@ app.post('/jwt', async (req, res) => {
 });
 
 
-//   import routes here
+// rutele
 const menuRoutes = require('./api/routes/menuRoutes');
 const cartRoutes = require('./api/routes/cartRoutes');
 const userRoutes = require('./api/routes/userRoutes');
 const paymentRoutes = require("./api/routes/paymentRoutes");
 const reservationRoutes = require('./api/routes/reservationRoutes');
 const favoriteRoutes = require('./api/routes/favoriteRoutes');
-
-
-
+const orderRoutes = require('./api/routes/orderRoutes');
+const clientMessagesRoutes = require('./api/routes/clientMessagesRoutes');
+const verifyToken = require('./api/middleware/verifyToken')
 //const adminStats =  require('./api/routes/adminStats');
 //const orderStats = require('./api/routes/orderStats');
 
@@ -59,22 +59,20 @@ app.use('/rezervare', reservationRoutes);
 app.use('/vizualizare-rezervari', reservationRoutes);
 app.use('/rezervare-client', reservationRoutes);
 app.use('/favorite',favoriteRoutes);
-
+app.use('/orders', orderRoutes);
+app.use('/messages',clientMessagesRoutes);
 
 
 //app.use('/admin-stats', adminStats);
 //app.use('/order-stats', orderStats);
 
 
-// payment methods routes
-const verifyToken = require('./api/middleware/verifyToken')
-
 app.post("/create-payment-intent",verifyToken, async (req, res) => {
   const { price } = req.body;
   const amount = price*100;
   // console.log(amount);
 
-  // Create a PaymentIntent 
+  // Creaza un paymentintent
   const paymentIntent = await stripe.paymentIntents.create({
     amount: amount,
     currency: "usd",

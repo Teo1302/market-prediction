@@ -9,7 +9,7 @@ const getAllMenuItems = async(req, res) => {
     }
 }
 
-// post a new menu item
+// meniu nou postat
 const postMenuItem = async(req, res) => {
     const newItem = req.body;
     try {
@@ -21,10 +21,9 @@ const postMenuItem = async(req, res) => {
     }
 };
 
-// delete a menu item
+// stergere un meniu
 const deleteMenuItem = async(req, res) => {
     const menuId = req.params.id;
-    // console.log(menuId)
     try {
         const deletedItem = await Menu.findByIdAndDelete(menuId);
 

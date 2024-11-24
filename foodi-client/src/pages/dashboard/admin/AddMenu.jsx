@@ -40,9 +40,9 @@ const AddMenu = () => {
       if(postMenuItem){
         reset()
         Swal.fire({
-          position: "top-end",
+          position: "center",
           icon: "success",
-          title: "Your Item is inserted successfully!",
+          title: "Meniu adaugat cu Succes!",
           showConfirmButton: false,
           timer: 1500
         });
@@ -54,7 +54,7 @@ const AddMenu = () => {
   return (
     <div className="w-full md:w-[870px] px-4 mx-auto">
       <h2 className="text-2xl font-semibold my-4">
-        Upload A New <span className="text-green">Menu Item</span>
+        Adauga un nou <span className="text-green">Element de Meniu</span>
       </h2>
 
       {/* form here */}
@@ -62,13 +62,13 @@ const AddMenu = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="form-control w-full">
             <label className="label">
-              <span className="label-text">Recipe Name</span>
+              <span className="label-text">Numele Preparatului</span>
             </label>
             <input
             // trebuie ca asta register("name" sa fie la fel ca ce avem in baza de date
               type="text"
               {...register("name", { required: true })}
-              placeholder="Recipe Name"
+              placeholder="Introduceti numele preparatului"
               className="input input-bordered w-full"
             />
           </div>
@@ -78,7 +78,7 @@ const AddMenu = () => {
             {/* categories */}
             <div className="form-control w-full my-6">
               <label className="label">
-                <span className="label-text">Category</span>
+                <span className="label-text">Categorie</span>
               </label>
               <select
                 {...register("category", { required: true })}
@@ -86,7 +86,7 @@ const AddMenu = () => {
                 defaultValue="default"
               >
                 <option disabled value="default">
-                  Select a category
+                 Selecteaza o Categorie
                   {/* same category ca cele din menu.json */}
                 </option>
                 <option value="salata">Salata</option>
@@ -101,12 +101,12 @@ const AddMenu = () => {
             {/* prices */}
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Price</span>
+                <span className="label-text">Pret</span>
               </label>
               <input
                 type="number"
                 {...register("price", { required: true })}
-                placeholder="Price"
+                placeholder="Introduceti pretul"
                 className="input input-bordered w-full"
               />
             </div>
@@ -115,12 +115,12 @@ const AddMenu = () => {
           {/* 3rd row */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Recipe Details</span>
+              <span className="label-text">Ingredientele Preparatului</span>
             </label>
             <textarea
               {...register("recipe", { required: true })}
               className="textarea textarea-bordered h-24"
-              placeholder="Tell the worlds about your recipe"
+              placeholder="Introduceti ingredientele utilizate si gramajul"
             ></textarea>
           </div>
 
@@ -132,9 +132,9 @@ const AddMenu = () => {
               className="file-input w-full max-w-xs"
             />
           </div>
-         {/* button final */}
+         {/* buton final */}
           <button className="btn bg-green text-white px-6">
-            Add Item <FaUtensils />
+            Adauga Produsul <FaUtensils />
           </button>
         </form>
       </div>

@@ -12,7 +12,6 @@ router.get('/', verifyToken, reservationController.getAllReservations);
 
 // Ruta pentru a obține rezervările după email
 router.get('/', verifyToken, reservationController.getReservationsByUser);
-
 // Ruta pentru a șterge o rezervare
 router.delete('/:id', verifyToken, reservationController.deleteReservation);
 

@@ -18,11 +18,9 @@ const sharedLinks = (
       </Link>
     </li>
     <li>
-        <Link to="/menu"><FaCartShopping/> Menu</Link>
+        <Link to="/menu"><FaCartShopping/> Meniu</Link>
     </li>
-    <li>
-        <Link to="/menu"><FaLocationArrow/> Orders Tracking</Link>
-    </li>
+
   </>
 );
 
@@ -35,7 +33,7 @@ const DashboardLayout = () => {
       isAdmin ?   <div className="drawer sm:drawer-open">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col sm:items-start sm:justify-start my-2">
-        {/* Page content here */}
+        {/* continut pagina */}
         <div className="flex items-center justify-between mx-4">
           <label
             htmlFor="my-drawer-2"
@@ -58,7 +56,7 @@ const DashboardLayout = () => {
           className="drawer-overlay"
         ></label>
         <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-          {/* Sidebar content here */}
+          {/* Sidebar continut */}
           <li>
         <Link to="/dashboard"className=' flex justify-start mb-3'>
          <img src={logo} alt="" className='w-20' />
@@ -79,17 +77,17 @@ const DashboardLayout = () => {
           <li>
             <Link to="/dashboard/add-menu">
               <FaPlusCircle />
-              Add Menu
+              Adauga Meniu
             </Link>
           </li>
           <li>
             <Link to="/dashboard/manage-items">
-              <FaEdit /> Manage Items
+              <FaEdit /> Gestioneaza Meniuri
             </Link>
           </li>
           <li className="mb-1">
             <Link to="/dashboard/users">
-              <FaUsers /> All Users
+              <FaUsers /> Vizualizare Utilizatori
             </Link>
           </li>
           <li >
@@ -97,17 +95,21 @@ const DashboardLayout = () => {
             <LuMessageCircle />Mesaje Clienti
             </Link>
           </li>
-
+          <li >
+            <Link to="/dashboard/comenzi">
+            <FaLocationArrow/> Comenzile Clientilor
+            </Link>
+    
+          </li>
+         
           <hr />
-      
-
           {/* shared nav links */}
           {
               sharedLinks
           }
         </ul>
       </div>
-    </div> : (loading ? <Login/> : <div className="h-screen flex justify-center items-center"><Link to="/"><button className="btn bg-green text-white">Back to Home</button></Link></div>)
+    </div> : (loading ? <Login/> : <div className="h-screen flex justify-center items-center"><Link to="/"><button className="btn bg-green text-white">Inapoi la Pagina Principala</button></Link></div>)
 }
     </div>
   );

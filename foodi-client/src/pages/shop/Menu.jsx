@@ -8,56 +8,58 @@ const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortOption, setSortOption] = useState("default");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8); // Number of items to display per page
+  const [itemsPerPage] = useState(8); 
   const [searchInput, setSearchInput] = useState("");
 
+ // Efect pentru încărcarea datelor inițiale din backend
   useEffect(() => {
-    // Fetch data from the backend
+    // preia datele din backend
     const fetchData = async () => {
       try {
         const response = await fetch("http://localhost:6001/menu");
         const data = await response.json();
-        setMenu(data);
-        setFilteredItems(data); // Initially, display all items
+        setMenu(data);// Setează starea meniu cu datele primite de la server
+        setFilteredItems(data); // Setează inițial filtrul cu toate elementele
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, []); // Empty dependency array to fetch data only once when component mounts
-
+  }, []); 
+ // Efect pentru filtrarea datelor când se schimbă căutarea
   useEffect(() => {
     filterBySearch();
-  }, [searchInput]); // Update filtered items when searchInput changes
-
+  }, [searchInput]); 
+ // Funcție pentru filtrarea după textul introdus în căutare
   const filterBySearch = () => {
     if (searchInput.trim() === "") {
-      setFilteredItems(menu); // If search input is empty, display all items
+      setFilteredItems(menu); // Dacă căutarea e goală, arată toate elementele
     } else {
       const filtered = menu.filter((item) =>
         item.name.toLowerCase().includes(searchInput.toLowerCase())
       );
-      setFilteredItems(filtered);
+      setFilteredItems(filtered); // Filtrare după numele elementului
     }
-    setCurrentPage(1); // Reset current page to 1 whenever search input changes
+    setCurrentPage(1); 
+     // Resetează pagina curentă la 1 când se schimbă căutarea
   };
 
   const filterItems = (category) => {
     const filtered =
       category === "all"
-        ? menu
-        : menu.filter((item) => item.category === category);
+        ? menu// Arată toate elementele
+        : menu.filter((item) => item.category === category);// Filtrare după categorie
 
-    setFilteredItems(filtered);
-    setSelectedCategory(category);
-    setCurrentPage(1);
+    setFilteredItems(filtered);// Setează elementele filtrate
+    setSelectedCategory(category);// Setează categoria selectată
+    setCurrentPage(1);// Resetează pagina curentă la 1 când se schimbă categoria
   };
-
+ // Funcție pentru schimbarea opțiunii de sortare
   const handleSortChange = (option) => {
-    setSortOption(option);
+    setSortOption(option);// Setează opțiunea de sortare selectată
 
-    // Logic for sorting based on the selected option
+    // Logica pentru sortare
     let sortedItems = [...filteredItems];
 
     switch (option) {
@@ -74,7 +76,7 @@ const Menu = () => {
         sortedItems.sort((a, b) => b.price - a.price);
         break;
       default:
-        // Do nothing for the "default" case
+       
         break;
     }
 
@@ -82,7 +84,7 @@ const Menu = () => {
     setCurrentPage(1);
   };
 
-  // Pagination logic
+  // Logica paginarii
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredItems.slice(
@@ -98,19 +100,18 @@ const Menu = () => {
       <div className="max-w-screen-2xl container mx-auto xl:px-24 px-4 bg-gradient-to-r from-0% from-[#FAFAFA] to-[#FCFCFC] to-100%">
         <div className="py-48 flex flex-col items-center justify-center">
           {/* content */}
-          <div className=" text-center px-4 space-y-7">
-            <h2 className="md:text-5xl text-4xl font-bold md:leading-snug leading-snug">
-              For the Love of Delicious <span className="text-green">Food</span>
-            </h2>
-            <p className="text-[#4A4A4A] text-xl md:w-4/5 mx-auto">
-              Come with family & feel the joy of mouthwatering food such as
-              Greek Salad, Lasagne, Butternut Pumpkin, Tokusen Wagyu, Olivas
-              Rellenas and more for a moderate cost
-            </p>
-            <button className="bg-green font-semibold btn text-white px-8 py-3 rounded-full">
-              Order Now
-            </button>
-          </div>
+          <div className="text-center px-4 space-y-7">
+  <h2 className="md:text-5xl text-4xl font-bold md:leading-snug leading-snug">
+    Dragostea pentru <span className="text-green">mâncarea delicioasă</span> ne unește
+  </h2>
+  <p className="text-[#4A4A4A] text-xl md:w-4/5 mx-auto">
+    Vino alături de cei dragi și bucură-te de preparatele noastre savuroase, precum Pizza Carbonara, Salata Caesar, Tarta cu Brânză și multe altele, toate la prețuri accesibile.
+  </p>
+  <button className="bg-green font-semibold btn text-white px-8 py-3 rounded-full">
+    Comandă Acum
+  </button>
+</div>
+
         </div>
       </div>
 
@@ -179,11 +180,11 @@ const Menu = () => {
               value={sortOption}
               className="bg-black text-white px-2 py-1 rounded-sm"
             >
-              <option value="default"> Default</option>
+              <option value="default"> Implicit</option>
               <option value="A-Z">A-Z</option>
               <option value="Z-A">Z-A</option>
-              <option value="low-to-high">Low to High</option>
-              <option value="high-to-low">High to Low</option>
+              <option value="low-to-high">De la Pret Mic la Mare</option>
+              <option value="high-to-low">De la Pret Mare la Mic</option>
             </select>
           </div>
         </div>

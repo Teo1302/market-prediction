@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
+// Configurare Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyD55KLKZ5ox04D1TocuKFPCxZbnMTrjxOI",
   authDomain: "fir-foodi-client-f8b5c.firebaseapp.com",
@@ -13,7 +13,7 @@ const firebaseConfig = {
   appId: "1:662397711076:web:51175e7cb3d91ca7fdb2f1"
 };
 
-// Initialize Firebase
+// Initializare Firebase
 const app = initializeApp(firebaseConfig);
 
 export default app;

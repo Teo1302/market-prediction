@@ -42,7 +42,7 @@ const SpecialDishes = () => {
       .then((res) => res.json())
       .then((data) => {
         const specials = data.filter((item) => item.category === "popular");
-        // console.log(specials)
+
         setRecipes(specials);
       });
   }, []);
@@ -86,7 +86,7 @@ const SpecialDishes = () => {
   return (
     <div className="max-w-screen-2xl container mx-auto xl:px-24 px-4 my-20 relative">
        <div className='text-left'>
-            <p className='subtitle'>Customer Favorites</p>
+            
             <h2 className='title'>Cele mai comandate meniuri</h2>
         </div>
       <div className="md:absolute right-3 top-8 mb-10 md:mr-24">

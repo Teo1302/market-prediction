@@ -98,7 +98,7 @@ const Bauturi = () => {
           value={sortOption}
           className="bg-black text-white px-2 py-1 rounded-sm"
         >
-          <option value="default">Default</option>
+          <option value="default">Implicit</option>
           <option value="A-Z">A-Z</option>
           <option value="Z-A">Z-A</option>
           <option value="low-to-high">Mic-Mare</option>

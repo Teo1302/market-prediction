@@ -21,12 +21,11 @@ const UpdateProfile = () => {
         const name = data.name;
         const photoURL = data.photoURL;
         updateUserProfile(name, photoURL).then(() => {
-            // Profile updated!
+           
             navigate(from, {replace: true})
-            // ...
+          
           }).catch((error) => {
-            // An error occurred
-            // ...
+           
           });
       }
 
@@ -35,25 +34,23 @@ const UpdateProfile = () => {
     <div className='flex items-center justify-center h-screen'>
         <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
       <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
-        <h3 className='font-bold'>Update Your Profile</h3>
+        <h3 className='font-bold'>Modifica Profilul</h3>
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Name</span>
+            <span className="label-text">Nume</span>
           </label>
-          <input {...register("name")} type="text" placeholder="your name" className="input input-bordered" required />
+          <input {...register("name")} type="text" placeholder="Numele tau" className="input input-bordered" required />
         </div>
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Upload Photo</span>
+            <span className="label-text">Incarca Poza</span>
           </label>
 
-          <input type="text" {...register("photoURL")} placeholder="photoURL" className="input input-bordered" required />
-          
-          {/* TODO: Uplodaing image will be later */}
-          {/* <input type="file" className="file-input w-full max-w-xs" /> */}
+          <input type="text" {...register("photoURL")} placeholder="pozaURL" className="input input-bordered" required />
+     
         </div>
         <div className="form-control mt-6">
-          <button className="btn bg-green text-white">Update</button>
+          <button className="btn bg-green text-white">Modifica</button>
         </div>
       </form>
     </div>

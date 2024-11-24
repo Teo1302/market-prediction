@@ -10,25 +10,25 @@ const ManageItems = () => {
   const axiosSecure = useAxiosSecure();
 //   console.log(menu);
 
-  //   handleDeleteItem
+
   const handleDeleteItem = (item) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Esti sigur?",
+      text: "Nu vei putea reveni asupra acestei acțiuni!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Da, sterge!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const res = await axiosSecure.delete(`/menu/${item._id}`);
-        // console.log(res);
+        
        if(res) {
         refetch();
         Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
+          title: "Sters!",
+          text: "Meniul a fost sters cu succes",
           icon: "success",
         });
        }
@@ -38,21 +38,21 @@ const ManageItems = () => {
   return (
     <div className="w-full md:w-[870px] px-4 mx-auto">
       <h2 className="text-2xl font-semibold my-4">
-        Manage All <span className="text-green">Menu Items</span>
+      Gestionează toate <span className="text-green">elementele din meniu</span>      
       </h2>
-      {/* menu item table */}
+      {/* tabel cu elementele de meniu */}
       <div>
         <div className="overflow-x-auto">
           <table className="table">
-            {/* head */}
+            {/* cap de tabel */}
             <thead>
               <tr>
                 <th>#</th>
-                <th>Image</th>
-                <th>Item Name</th>
-                <th>Price</th>
-                <th>Edit</th>
-                <th>Delete</th>
+                <th>Imagine</th>
+                <th>Nume Meniu</th>
+                <th>Pret</th>
+                <th>Editeaza</th>
+                <th>Sterge</th>
               </tr>
             </thead>
             <tbody>
@@ -69,7 +69,7 @@ const ManageItems = () => {
                     </div>
                   </td>
                   <td>{item.name}</td>
-                  <td>${item.price}</td>
+                  <td>{item.price} lei</td>
                   <td>
                     <Link to={`/dashboard/update-menu/${item._id}`}>
                       <button className="btn btn-ghost btn-xs bg-orange-500 text-white">

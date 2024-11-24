@@ -1,12 +1,13 @@
 import React, { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaFacebookF, FaGithub, FaGoogle } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../contexts/AuthProvider";
 import axios from "axios";
 
 const Modal = () => {
-  const [errorMessage, seterrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const { signUpWithGmail, login } = useContext(AuthContext);
 
   const navigate = useNavigate();
@@ -14,44 +15,52 @@ const Modal = () => {
 
   const from = location.state?.from?.pathname || "/";
 
-  //react hook form
+  // react hook form
   const {
     register,
-    handleSubmit, reset,
+    handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
   const onSubmit = (data) => {
     const email = data.email;
     const password = data.password;
+
     login(email, password)
       .then((result) => {
-        // Signed in
+        // Signed in successfully
         const user = result.user;
         const userInfor = {
           name: data.name,
           email: data.email,
         };
-        axios
-          .post("http://localhost:6001/users", userInfor)
-          .then((response) => {
-            // console.log(response);
-            alert("Signin successful!");
-            navigate(from, { replace: true });
-          });
-        // console.log(user);
-        // ...
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        seterrorMessage("Please provide valid email & password!");
-      });
-      reset()
 
-  };
+        axios
+        .post("http://localhost:6001/users", userInfor)
+        .then((response) => {
+          setSuccessMessage("Autentificare reușită!");
+          setTimeout(() => {
+            setSuccessMessage("");
+            document.getElementById("my_modal_5").close();
+            navigate("/");
+          }, 2000); 
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 302) {
+            setSuccessMessage("Autentificare reușită!"); 
+            setTimeout(() => {
+              setSuccessMessage("");
+              document.getElementById("my_modal_5").close();
+              navigate("/"); 
+            }, 1000);
+          }
+        });
+      }
+      )} ;    
 
   // login with google
-  const handleRegister = () => {
+  const handleLoginWithGoogle = () => {
     signUpWithGmail()
       .then((result) => {
         const user = result.user;
@@ -59,12 +68,16 @@ const Modal = () => {
           name: result?.user?.displayName,
           email: result?.user?.email,
         };
+
         axios
           .post("http://localhost:6001/users", userInfor)
           .then((response) => {
-            // console.log(response);
-            alert("Signin successful!");
-            navigate("/");
+            setSuccessMessage("Autentificare reușită!");
+            setTimeout(() => {
+              setSuccessMessage("");
+              document.getElementById("my_modal_5").close();
+              navigate("/");
+            }, 2000); 
           });
       })
       .catch((error) => console.log(error));
@@ -79,7 +92,7 @@ const Modal = () => {
             method="dialog"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <h3 className="font-bold text-lg">Please Login!</h3>
+            <h3 className="font-bold text-lg">Te rog, Logheaza-te!</h3>
 
             {/* email */}
             <div className="form-control">
@@ -94,31 +107,30 @@ const Modal = () => {
               />
             </div>
 
-            {/* password */}
+            {/* parola */}
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Password</span>
+                <span className="label-text">Parola</span>
               </label>
               <input
                 type="password"
-                placeholder="password"
+                placeholder="parola"
                 className="input input-bordered"
                 {...register("password", { required: true })}
               />
               <label className="label">
-                <a href="#" className="label-text-alt link link-hover mt-2">
-                  Forgot password?
-                </a>
+                <a href="#" className="label-text-alt link link-hover mt-2"></a>
               </label>
             </div>
 
-            {/* show errors */}
-            {errorMessage ? (
-              <p className="text-red text-xs italic">
-                Provide a correct username & password.
-              </p>
-            ) : (
-              ""
+            {/* erori vizibile*/}
+            {errorMessage && (
+              <p className="text-red text-xs italic">{errorMessage}</p>
+            )}
+
+            {/* mesaj de succes */}
+            {successMessage && (
+              <p className="text-green text-xs italic">{successMessage}</p>
             )}
 
             {/* submit btn */}
@@ -140,20 +152,19 @@ const Modal = () => {
             </div>
 
             <p className="text-center my-2">
-              Donot have an account?
+              Nu aveți cont?
               <Link to="/signup" className="underline text-red ml-1">
-                Signup Now
+                Înregistrați-vă
               </Link>
             </p>
           </form>
           <div className="text-center space-x-3 mb-5">
             <button
-              onClick={handleRegister}
+              onClick={handleLoginWithGoogle}
               className="btn btn-circle hover:bg-green hover:text-white"
             >
               <FaGoogle />
             </button>
-        
           </div>
         </div>
       </div>

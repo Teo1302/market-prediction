@@ -17,10 +17,10 @@
     font-size: 1.125rem; /* corespunzător text-lg în Tailwind */
   }
   .title {
-    font-size: 2.25rem; /* Equivalent to text-4xl */
+    font-size: 2.25rem; /* Echivalent cu text-4xl */
     font-weight: bold;
-    margin-top: 0.5rem; /* Equivalent to my-2 */
-    line-height: 1.375; /* Equivalent to md:leading-snug leading-snug */
+    margin-top: 0.5rem; /* Echivalent cu my-2 */
+    line-height: 1.375; /* Echivalent cu md:leading-snug leading-snug */
   }
 
 .heartStar{

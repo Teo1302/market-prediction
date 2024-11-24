@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MdPermContactCalendar } from "react-icons/md";
 import { TbTruckDelivery } from "react-icons/tb";
 import Swal from 'sweetalert2';
+import axios from 'axios'; 
 
 
 
@@ -23,7 +24,53 @@ const Contact = () => {
   });
   const [clientMessages, setClientMessages] = useState([]);
 
-  const sendFormDataToClientMessages = () => {
+  const sendFormDataToClientMessages = async () => {
+    try {
+      const response = await axios.post('http://localhost:6001/messages', formData);
+      // Dacă am primit un răspuns de la server fără erori, adăugăm mesajul în starea locală
+      setClientMessages([...clientMessages, formData]);
+
+      // Mesaj de succes
+      Swal.fire({
+        icon: 'success',
+        title: 'Succes!',
+        text: 'Formularul a fost trimis cu succes!',
+      });
+
+      // Resetează starea formularului după trimiterea cu succes
+      setFormData({
+        name: '',
+        email: '',
+        prenume: '',
+        phone: '',
+        message: ''
+      });
+
+      // Resetează erorile
+      setErrors({
+        name: '',
+        email: '',
+        prenume: '',
+        phone: '',
+        message: ''
+      });
+    } catch (error) {
+      // Gestionarea erorilor de la server
+      console.error('Error submitting form:', error);
+
+      // Afișează un mesaj de eroare folosind SweetAlert2
+      Swal.fire({
+        icon: 'error',
+        title: 'Eroare!',
+        text: 'A apărut o eroare la trimiterea formularului. Te rugăm să încerci din nou mai târziu.',
+      });
+    }
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    // Validarea câmpurilor înainte de trimitere
     if (
       formData.name.trim() === '' ||
       formData.email.trim() === '' ||
@@ -31,79 +78,44 @@ const Contact = () => {
       formData.phone.trim() === '' ||
       formData.message.trim() === ''
     ) {
-      setErrors(prevErrors => ({
-        ...prevErrors,
+      setErrors({
         name: formData.name.trim() === '' ? 'Acest câmp este obligatoriu' : '',
         email: formData.email.trim() === '' ? 'Acest câmp este obligatoriu' : '',
         prenume: formData.prenume.trim() === '' ? 'Acest câmp este obligatoriu' : '',
         phone: formData.phone.trim() === '' ? 'Acest câmp este obligatoriu' : '',
         message: formData.message.trim() === '' ? 'Acest câmp este obligatoriu' : ''
-      }));
+      });
+
+      // Afișează un mesaj de eroare
       Swal.fire({
         icon: 'error',
         title: 'Eroare!',
         text: 'Vă rugăm să completați toate câmpurile obligatorii.',
       });
+
       return;
     }
-  
+
+    // Validarea numărului de telefon
     if (formData.phone.length !== 10 || formData.phone.charAt(0) !== '0') {
-      setErrors(prevErrors => ({
-        ...prevErrors,
+      setErrors({
+        ...errors,
         phone: 'Numărul de telefon trebuie să aibă exact 10 caractere și să înceapă cu 0.'
-      }));
+      });
+
+      // Afișează un mesaj de eroare
       Swal.fire({
         icon: 'error',
         title: 'Eroare!',
-        text: 'Vă rugăm să completati datele cu un numar de telefon valid.',
+        text: 'Vă rugăm să completați datele cu un număr de telefon valid.',
       });
+
       return;
     }
 
-    let storedMessages = JSON.parse(localStorage.getItem('clientMessages')) || [];
-    if (!Array.isArray(storedMessages)) {
-      // Transformă obiectul într-un array
-      storedMessages = [storedMessages];
-    }
-  
-    const updatedMessages = [...storedMessages, formData];
-    localStorage.setItem('clientMessages', JSON.stringify(updatedMessages));
-    setClientMessages(updatedMessages);
-  
-    // Afișează un mesaj de succes folosind SweetAlert
-    Swal.fire({
-      icon: 'success',
-      title: 'Succes!',
-      text: 'Formularul a fost trimis cu succes!',
-    });
-  
-    // Resetează starea formularului după trimiterea cu succes
-    setFormData({
-      name: '',
-      email: '',
-      prenume: '',
-      phone: '',
-      message: ''
-    });
-    // Setează starea de eroare la inițial după trimiterea cu succes
-    setErrors({
-      name: '',
-      email: '',
-      prenume: '',
-      phone: '',
-      message: ''
-    });
-  };
-  
-
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-  
+    // Trimite datele către funcția de gestionare a mesajelor
     sendFormDataToClientMessages();
-    
   };
-  
 
   // Funcție pentru actualizarea valorii unui câmp în starea formularului
   const handleInputChange = (event) => {
@@ -209,10 +221,10 @@ const Contact = () => {
               <iframe
   width="100%"
   height="700"
-  frameBorder="0" // Schimbați frameborder în frameBorder
+  frameBorder="0" // Schimba frameborder în frameBorder
   scrolling="no"
-  marginHeight="0" // Schimbați marginheight în marginHeight
-  marginWidth="0" // Schimbați marginwidth în marginWidth
+  marginHeight="0" // Schimba marginheight în marginHeight
+  marginWidth="0" // Schimba marginwidth în marginWidth
   src="https://maps.google.com/maps?width=100%25&amp;height=400&amp;hl=en&amp;q=Strada%20Teodor%20Mihali%2058-60,%20Cluj-Napoca%20400591+(Restaurant%20Foodi)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
 >
 </iframe>

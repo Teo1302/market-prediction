@@ -29,23 +29,81 @@ const CheckoutForm = ({price, cart}) => {
     prenume: '',
     phone: '',
     tipLivrare: '',
-    adresaLivrare: '', 
-    oras: '', 
+    adresaLivrare: '',
+    oras: '',
     codPostal: '',
-    metodaDePlata: '',
+    metodaDePlata: 'Plata Online',
     momentPrimireComanda: '',
     tacamuri: '',
     instructiuniSpeciale: ''
   });
   const [livrareLaDomiciliu, setLivrareLaDomiciliu] = useState(false);
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  
   useEffect(() => {
-    // Retrieve data from localStorage when component mounts
-    const storedFormData = localStorage.getItem('formData');
-    if (storedFormData) {
-      setFormData(JSON.parse(storedFormData));
-    }
-  }, []);
+    const fetchOrderDetails = async () => {
+      try {
+        const response = await axiosSecure.get('http://localhost:6001/orders/last');
+
+        if (!response.data) {
+          console.error('Nu s-a primit niciun răspuns de la server.');
+          return;
+        }
+
+        const {
+          nume,
+          email,
+          prenume,
+          phone,
+          tipLivrare,
+          adresaLivrare,
+          oras,
+          codPostal,
+          momentPrimireComanda,
+          tacamuri,
+          instructiuniSpeciale
+        } = response.data;
+
+        setFormData({
+          nume,
+          email,
+          prenume,
+          phone,
+          tipLivrare,
+          adresaLivrare,
+          oras,
+          codPostal,
+          metodaDePlata: 'Plata Online',
+          momentPrimireComanda,
+          tacamuri,
+          instructiuniSpeciale
+        });
+
+        // Set state for delivery type
+        if (tipLivrare === 'domiciliu') {
+          setLivrareLaDomiciliu(true);
+        }
+      } catch (error) {
+        console.error('Eroare la preluarea datelor ultimei comenzi:', error);
+      }
+    };
+
+    fetchOrderDetails();
+  }, [axiosSecure]);
+  const formatDateTime = (dateTimeString) => {
+    const dateObj = new Date(dateTimeString);
+    const formattedDate = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+    const formattedTime = `${dateObj.getHours().toString().padStart(2, '0')}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
+    return `${formattedDate} ${formattedTime}`;
+  };
 
   const handleLivrareClick = () => {
     setLivrareLaDomiciliu(true);
@@ -63,14 +121,12 @@ const CheckoutForm = ({price, cart}) => {
     }));
   };
   const placeOrder = () => {
-    // Aici puteți adăuga logica pentru a plasa comanda
-  
-    // Exemplu simplu de afișare a SweetAlert
+
     Swal.fire({
       icon: 'success',
       title: 'Comanda a fost plasată cu succes!',
       showConfirmButton: false,
-      timer: 1500 // Afiseaza alerta timp de 1.5 secunde
+      timer: 1500 
     });
   } 
 
@@ -100,17 +156,18 @@ const CheckoutForm = ({price, cart}) => {
         return '25 lei';
       }
     } else {
-      return 'Gratis'; // Taxa de livrare este 0 pentru ridicarea din restaurant
+      return 'Gratis'; 
+      // Taxa de livrare este 0 pentru ridicarea din restaurant
     }
   };
 
-  // handleSubmit btn click
+
   const handleSubmit = async (event) => {
-    // Block native form submission.
+    // blocare trimitere form
     event.preventDefault();
 
     if (!stripe || !elements) {
-      // Stripe.js has not loaded yet. Make sure to disable
+  
       return;
     }
 
@@ -120,7 +177,7 @@ const CheckoutForm = ({price, cart}) => {
       return;
     }
 
-    // console.log('card: ', card)
+ 
     const {error, paymentMethod} = await stripe.createPaymentMethod({
       type: 'card',
       card,
@@ -157,11 +214,17 @@ const CheckoutForm = ({price, cart}) => {
       const transitionId =paymentIntent.id;
       setcardError(`Your transitionId is: ${transitionId}`)
 
-      // save payment info to server
-      const paymentInfo ={email: user.email, transitionId: paymentIntent.id, price, quantity: cart.length,
-        status: "order pending", itemsName: cart.map(item => item.name), cartItems: cart.map(item => item._id), menuItems: cart.map(item => item.menuItemId)}
+      // salvare info legate de plata pe server
+      const paymentInfo ={
+        email: user.email,
+        transitionId: paymentIntent.id,
+        price,
+        quantity: cart.length,
+        status: "order pending", 
+        itemsName: cart.map(item => item.name),
+        cartItems: cart.map(item => item._id), 
+        menuItems: cart.map(item => item.menuItemId)}
 
-      // send payment info
       axiosSecure.post('/payments', paymentInfo)
       .then( res => {
         console.log(res.data)
@@ -207,7 +270,7 @@ const CheckoutForm = ({price, cart}) => {
 
         </div>
         <p className="text-sm text-gray-500 mt-2">Preturile sunt exprimate in lei si contin TVA.</p>
-        <p className="text-sm text-gray-500 mt-2">Taxa de livrare este gratuită pentru comenzi de peste <b>50</b> de lei.</p>
+        <p className="text-sm text-gray-500 mt-2">Taxa de livrare este gratuită pentru comenzi de peste <b>50</b> sau daca pachetul se ridica din restaurant.</p>
       </div>
 
 
@@ -215,31 +278,34 @@ const CheckoutForm = ({price, cart}) => {
       <div className="md:w-1/2 space-y-3">
         <div className="card w-full bg-base-100 shadow-xl mb-8" style={{ marginTop: '40px' }}>
           <div className="card-body">
-            <h2 className="card-title">Date despre Comanda Dvs</h2>
-            <p><strong>Nume:</strong> {formData.nume}</p>
-            <p><strong>Prenume:</strong> {formData.prenume}</p>
-            <p><strong>Email:</strong> {formData.email}</p>
-            <p><strong>Nr_telefon:</strong> {formData.phone}</p>
-            <p><strong>Tip Livrare:</strong> {formData.tipLivrare}</p>
-            {livrareLaDomiciliu && (
-              <>
-                <p><strong>Adresa Livrare:</strong> {formData.adresaLivrare}</p>
-                <p><strong>Oras:</strong> {formData.oras}</p>
-                <p><strong>Cod Postal:</strong> {formData.codPostal}</p>
-              </>
-            )}
-            <p><strong>Metoda De Plata:</strong> {formData.metodaDePlata}</p>
-            <p><strong>Moment Primire Comanda:</strong> {formData.momentPrimireComanda}</p>
-            <p><strong>Tacamuri:</strong> {formData.tacamuri}</p>
-            <p><strong>Instructiuni Speciale:</strong> {formData.instructiuniSpeciale}</p>
+          <div className="card-body">
+  <h2 className="card-title">Date despre Comanda Dvs</h2>
+  <p><strong>Nume:</strong> {formData.nume}</p>
+  <p><strong>Prenume:</strong> {formData.prenume}</p>
+  <p><strong>Email:</strong> {formData.email}</p>
+  <p><strong>Nr_telefon:</strong> {formData.phone}</p>
+  <p><strong>Tip Livrare:</strong> {formData.tipLivrare}</p>
+  {livrareLaDomiciliu && (
+    <>
+      <p><strong>Adresa Livrare:</strong> {formData.adresaLivrare}</p>
+      <p><strong>Oras:</strong> {formData.oras}</p>
+      <p><strong>Cod Postal:</strong> {formData.codPostal}</p>
+    </>
+  )}
+  <p><strong>Metoda De Plata:</strong> {formData.metodaDePlata}</p>
+  <p><strong>Moment Primire Comanda:</strong> {formatDateTime(formData.momentPrimireComanda)}</p>
+  <p><strong>Tacamuri:</strong> {formData.tacamuri}</p>
+  <p><strong>Instructiuni Speciale:</strong> {formData.instructiuniSpeciale}</p>
+</div>
+
             <Link to="/cart-details">
               <button className="btn bg-green text-white m-3">Inapoi la Completare Detalii Comanda </button>
             </Link>
             </div> 
             </div>
       <div className=' w-full space-y-3 card shrink-0 max-w-sm shadow-2xl bg-base-120 px-4 py-8'> 
-      <h4 className="text-lg font-semibold">Proccess you Payment!</h4>
-      <h5 className='font-medium'>Credit/Debit Card </h5>
+      <h4 className="text-lg font-semibold">Finalizeaza Plata Online!</h4>
+      <h5 className='font-medium'>Introduceti datele cardului </h5>
       {/* stripe form */}
       <form onSubmit={handleSubmit}>
       <CardElement
@@ -259,16 +325,16 @@ const CheckoutForm = ({price, cart}) => {
         }}
       />
       <button type="submit" disabled={!stripe|| !clientSecret} className="btn btn-primary btn-sm mt-5 w-full">
-        Pay
+        Plateste!
       </button>
     </form>
 
-    {/* paypal options */}
+    {/* paypal optiuni */}
     {
     cardError ? <p className="text-red text-xs italic">{cardError}</p> : ''
     }
      
-     <div className="mt-5 text-center">
+     {/* <div className="mt-5 text-center">
      <hr />
      <button
          type="submit"
@@ -278,7 +344,7 @@ const CheckoutForm = ({price, cart}) => {
        </button>
 
 
-</div>
+</div> */}
 
       </div>
 

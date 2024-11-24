@@ -1,9 +1,10 @@
+import React, { useEffect, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import useCart from "../../hooks/useCart";
-import CartDetails from './CartDetails';
-import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import axios from 'axios';
+import { AuthContext } from "../../contexts/AuthProvider";
 
 const Numerar = ({ clientDetails }) => {
   const [cart] = useCart();
@@ -13,73 +14,77 @@ const Numerar = ({ clientDetails }) => {
     prenume: '',
     phone: '',
     tipLivrare: '',
-    adresaLivrare: '', 
-    oras: '', 
+    adresaLivrare: '',
+    oras: '',
     codPostal: '',
-    metodaDePlata: '',
+    metodaDePlata: 'Numerar',
     momentPrimireComanda: '',
     tacamuri: '',
     instructiuniSpeciale: ''
   });
-  
+
   const [livrareLaDomiciliu, setLivrareLaDomiciliu] = useState(false);
 
   useEffect(() => {
-    // Retrieve data from localStorage when component mounts
-    const storedFormData = localStorage.getItem('formData');
-    if (storedFormData) {
-      setFormData(JSON.parse(storedFormData));
-    }
-  }, []);
+    const fetchLastOrder = async () => {
+        try {
+            const response = await axios.get('http://localhost:6001/orders/last');
 
-  const handleLivrareClick = () => {
-    setLivrareLaDomiciliu(true);
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      tipLivrare: 'domiciliu'
-    }));
-  };
+            if (!response.data) {
+                console.error('Nu s-a primit niciun răspuns de la server.');
+                return;
+            }
 
-  const handleRidicareClick = () => {
-    setLivrareLaDomiciliu(false);
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      tipLivrare: 'ridicare'
-    }));
-  };
+            const { nume, email, prenume, phone, tipLivrare, adresaLivrare, oras, codPostal, momentPrimireComanda, tacamuri, instructiuniSpeciale } = response.data;
 
-  // Calculăm prețul total al coșului
-  const totalPrice = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+            setFormData({
+                nume,
+                email,
+                prenume,
+                phone,
+                tipLivrare,
+                adresaLivrare,
+                oras,
+                codPostal,
+                metodaDePlata: 'Numerar',
+                momentPrimireComanda,
+                tacamuri,
+                instructiuniSpeciale
+            });
 
-  const calculateShippingFee = () => {
-    if (livrareLaDomiciliu) {
-      if (totalPrice >= 50) {
-        return 'Gratis';
-      } else {
-        return '25 lei';
-      }
-    } else {
-      return 'Gratis'; // Taxa de livrare este 0 pentru ridicarea din restaurant
-    }
-  };
+            if (tipLivrare === 'domiciliu') {
+                setLivrareLaDomiciliu(true);
+            }
+        } catch (error) {
+            console.error('Eroare la preluarea datelor ultimei comenzi:', error);
+        }
+    };
 
+    fetchLastOrder();
+}, []);
+
+  // Funcția pentru a plasa comanda
   const placeOrder = () => {
-    // Aici puteți adăuga logica pentru a plasa comanda
-  
-    // Exemplu simplu de afișare a SweetAlert
+    
     Swal.fire({
       icon: 'success',
       title: 'Comanda a fost plasată cu succes!',
       showConfirmButton: false,
-      timer: 1500 // Afiseaza alerta timp de 1.5 secunde
+      timer: 1500 
     });
-  }
-
+  
+  };
+  const formatDateTime = (dateTimeString) => {
+    const dateObj = new Date(dateTimeString);
+    const formattedDate = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+    const formattedTime = `${dateObj.getHours().toString().padStart(2, '0')}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
+    return `${formattedDate} ${formattedTime}`;
+  };
+ 
   return (
-
     <div className="flex flex-col md:flex-row justify-center items-start gap-8 m-20 mb-10 mt-20">
-          
       <div className="md:w-1/2 space-y-3">
+        {/* Structura pentru afișarea coșului și a sumarului comenzii */}
         <div className="card w-full bg-base-100 shadow-xl mb-8" style={{ marginTop: '40px' }}>
           <h4 className="text-lg font-semibold m-4"><FaShoppingCart/>Comanda mea</h4>
           {cart.map((item, index) => (
@@ -95,30 +100,37 @@ const Numerar = ({ clientDetails }) => {
             </div>
           ))}
           <hr className="border-t border-gray-300 mx-4" />
-          <p className="mb-4 m-4 font-bold text-size:18 ">Total: <span className={calculateShippingFee() === 'Gratis' ? 'text-green-500 font-bold' : 'text-red-500 font-bold'}>
-            {totalPrice}</span> lei</p>
+          <p className="mb-4 m-4 font-bold text-size:18 ">Total: <span className="text-green-500 font-bold">
+            {/* Afișează prețul total al coșului */}
+            {cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}
+            </span> lei</p>
         </div>
-        
+
+        {/* Structura pentru sumarul comenzii */}
         <div className="card w-full bg-base-100 shadow-xl mb-8">
           <h4 className="text-lg font-semibold m-4">Sumar comandă</h4>
-          <p className="mb-2 m-4">Subtotal: {totalPrice} lei</p>
-          <p className="mb-2 m-4">Taxa de livrare: <span className={calculateShippingFee() === 'Gratis' ? 'text-green font-bold' : 'text-red font-bold'}>{calculateShippingFee()}</span></p>
+          <p className="mb-2 m-4">Subtotal: {(cart.reduce((acc, item) => acc + item.price * item.quantity, 0)).toFixed(2)} lei</p>
+          <p className="mb-2 m-4">Taxa de livrare: <span className="text-green font-bold">Gratis</span></p> {/* Afișează taxa de livrare */}
           <hr className="border-t border-gray-300 mx-4" />
-          <p className="mb-4 m-4 font-bold text-size:18 ">Total final: <span className={calculateShippingFee() === 'Gratis' ? 'text-green-500 font-bold' : 'text-red-500 font-bold'}>
-            {(totalPrice + (calculateShippingFee() === 'Gratis' ? 0 : 25)).toFixed(2)}</span> lei</p>
+          <p className="mb-4 m-4 font-bold text-size:18 ">Total final: <span className="text-green-500 font-bold">
+            {/* Afișează totalul final al comenzii */}
+            {(cart.reduce((acc, item) => acc + item.price * item.quantity, 0)).toFixed(2)}
+            </span> lei</p>
         </div>
         <p className="text-sm text-gray-500 mt-2">Preturile sunt exprimate in lei si contin TVA.</p>
         <p className="text-sm text-gray-500 mt-2">Taxa de livrare este gratuită pentru comenzi de peste <b>50</b> de lei sau daca pachetul se ridica din restaurant.</p>
 
+        {/* Butonul pentru a confirma și plasa comanda */}
         <div className="flex justify-center">
-          <Link to="/order">
+          <Link to="http://localhost:5173/">
             <button className="btn bg-green text-white m-3" onClick={placeOrder}>
               Confirma si Plaseaza Comanda 
             </button>
           </Link>
         </div>
       </div>
-      
+
+      {/* Structura pentru afișarea detaliilor despre comanda */}
       <div className="md:w-1/2 space-y-3">
         <div className="card w-full bg-base-100 shadow-xl mb-8" style={{ marginTop: '40px' }}>
           <div className="card-body">
@@ -135,20 +147,20 @@ const Numerar = ({ clientDetails }) => {
                 <p><strong>Cod Postal:</strong> {formData.codPostal}</p>
               </>
             )}
-            <p><strong>Metoda De Plata:</strong> {formData.metodaDePlata}</p>
-            <p><strong>Moment Primire Comanda:</strong> {formData.momentPrimireComanda}</p>
+            <p><strong>Metoda De Plata:</strong> Numerar</p>
+            <p><strong>Moment Primire Comanda:</strong> {formatDateTime(formData.momentPrimireComanda)}</p>
+
             <p><strong>Tacamuri:</strong> {formData.tacamuri}</p>
             <p><strong>Instructiuni Speciale:</strong> {formData.instructiuniSpeciale}</p>
             <Link to="/cart-details">
               <button className="btn bg-green text-white m-3">Inapoi la Completare Detalii Comanda </button>
             </Link>
+         
+
           </div>
         </div>
       </div>
     </div>
-
-  
-
   );
 };
 

@@ -6,7 +6,7 @@ const Pizza = () => {
   const [pizzaItems, setPizzaItems] = useState([]);
   const [filteredPizzaItems, setFilteredPizzaItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8); // Numărul de elemente de afișat pe pagină
+  const [itemsPerPage] = useState(8); 
   const [searchInput, setSearchInput] = useState("");
   const [sortOption, setSortOption] = useState("default");
 
@@ -74,13 +74,14 @@ const Pizza = () => {
 
   return (
     <div>
-      {/* Textul drăguț și spațiu între meniul de sus și cardurile cu mâncare */}
+      {/* Text */}
       <div className="max-w-screen-2xl container mx-auto xl:px-24 px-4 mt-8 mb-4">
         <h2 className="text-3xl font-semibold text-center mt-40">
-          Explore Our Delicious Pizzas
+          Explorati oferta diversa de Pizza!
         </h2>
         <p className="text-gray-600 text-center mt-2">
-          Enjoy a variety of mouthwatering pizzas. Find your favorite!
+        Bucură-te de o varietate de pizze delicioase. Găsește-ți favorita!
+
         </p>
       </div>
 
@@ -102,11 +103,11 @@ const Pizza = () => {
           value={sortOption}
           className="bg-black text-white px-2 py-1 rounded-sm"
         >
-          <option value="default">Default</option>
+          <option value="default">Implicit</option>
           <option value="A-Z">A-Z</option>
           <option value="Z-A">Z-A</option>
-          <option value="low-to-high">Low to High</option>
-          <option value="high-to-low">High to Low</option>
+          <option value="low-to-high">Pret Mic - Mare</option>
+          <option value="high-to-low">Pret Mare - Mic</option>
         </select>
       </div>
 

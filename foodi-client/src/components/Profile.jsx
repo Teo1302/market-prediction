@@ -7,15 +7,14 @@ const Profile = ({ user }) => {
   const {logOut} = useContext(AuthContext);
   const navigate = useNavigate();
 
-  //logout
+  //iesire din cont
   const handleLogout = () => {
     logOut()
     .then(() => {
       navigate("/")
-      // Sign-out successful.
+      // iesire din cont cu succes
     })
     .catch((error) => {
-      // An error happened.
       console.log(error);
     });
   }
@@ -24,7 +23,7 @@ const Profile = ({ user }) => {
       <div className="drawer drawer-end z-50">
         <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
-          {/* Page content here */}
+          {/* Continut pag*/}
           <label
             htmlFor="my-drawer-4"
             className="drawer-button btn btn-ghost btn-circle avatar"
@@ -34,7 +33,7 @@ const Profile = ({ user }) => {
                 user.photoURL ? <img
                 alt="Tailwind CSS Navbar component"
                 src={user.photoURL}
-              /> : <img alt="Tailwind CSS Navbar component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              /> : <img alt="poza" src="https://as2.ftcdn.net/v2/jpg/03/32/59/65/1000_F_332596535_lAdLhf6KzbW6PWXBWeIFTovTii1drkbT.jpg" />
               }
             </div>
           </label>
@@ -46,12 +45,12 @@ const Profile = ({ user }) => {
             className="drawer-overlay"
           ></label>
           <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-            {/* Sidebar content here */}
+            {/* Sidebar continut */}
             <li>
               <a href="/update-profile">Profil</a>
             </li>
             <li>
-              <a href="/order">Order</a>
+              <a href="/order">Comenzile mele</a>
             </li>
             <li>
               <a href="/rezervare-client">Rezervarile mele</a>
@@ -60,7 +59,7 @@ const Profile = ({ user }) => {
               <Link to="/dashboard">Dashboard</Link>
             </li>
             <li>
-              <a onClick={handleLogout}>Logout</a>
+              <a onClick={handleLogout}>Deconectare</a>
             </li>
           </ul>
         </div>

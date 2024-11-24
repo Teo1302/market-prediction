@@ -4,7 +4,6 @@ const Carts = require("../models/Carts");
 const getCartByEmail = async(req, res) => {
     try {
         const email = req.query.email;
-        // console.log(email);
         const query = {email: email};
         const result = await Carts.find(query).exec();
         res.status(200).json(result)
@@ -16,11 +15,9 @@ const getCartByEmail = async(req, res) => {
 // post a cart when add-to-cart btn clicked 
 const addToCart = async(req, res) => {
     const {menuItemId, name, recipe, image, price, quantity,email } = req.body;
-    // console.log(email)
     try {
         // exiting menu item
         const existingCartItem = await Carts.findOne({email, menuItemId });
-        // console.log(existingCartItem)
         if(existingCartItem){
             return res.status(400).json({message: "Product already exists in the cart!"});
         }
@@ -36,7 +33,7 @@ const addToCart = async(req, res) => {
     }
 }
 
-// delete a cart item
+// stergere
 const deleteCart =  async (req, res) => {
     const cartId = req.params.id;
     try {
@@ -51,7 +48,7 @@ const deleteCart =  async (req, res) => {
     }
 };
 
-// updata a cart item
+// modifica cos
 const updateCart = async (req, res) => {
     const cartId = req.params.id;
     const {menuItemId, name, recipe, image, price, quantity,email } = req.body;
@@ -71,7 +68,7 @@ const updateCart = async (req, res) => {
     }
 }
 
-// get single recipe
+//singur
 const getSingleCart = async (req, res) => {
     const cartId = req.params.id;
     try {

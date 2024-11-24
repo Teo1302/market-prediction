@@ -3,22 +3,37 @@ import useCart from "../../hooks/useCart";
 import { AuthContext } from "../../contexts/AuthProvider";
 import Swal from "sweetalert2";
 import { FaTrash } from "react-icons/fa";
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import axios from "axios";
 import CartDetails from "./CartDetails";
 
 const CartPage = () => {
   const { user } = useContext(AuthContext);
   const [cart, refetch] = useCart();
+  const navigate = useNavigate();
   console.log(cart)
   const [cartItems, setCartItems] = useState([]);
-  // console.log(cartItems)
 
-  // Calculate the total price for each item in the cart
+  useEffect(() => {
+    if (!user) {
+      Swal.fire({
+        title: "Nu esti Logat!",
+        text: "Treebuie sa fii logat ca sa vizualizezi cosul de cumparaturi.",
+        icon: "warning",
+        confirmButtonText: "Logheaza-te",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
+    }
+  }, [user, navigate]);
+
+  // Calc pret total al fiecarui produs
   const calculateTotalPrice = (item) => {
     return item.price * item.quantity;
   };
-  // Handle quantity increase
+  // cantitate crescuta
   const handleIncrease = async (item) => {
   try {
     const response = await fetch(`http://localhost:6001/carts/${item._id}`, {
@@ -31,7 +46,7 @@ const CartPage = () => {
 
     if (response.ok) {
       const updatedCart = cartItems.map((cartItem) => {
-        if (cartItem._id === item._id) { // Modificare aici pentru a verifica după _id
+        if (cartItem._id === item._id) { 
           return {
             ...cartItem,
             quantity: cartItem.quantity + 1,
@@ -49,7 +64,7 @@ const CartPage = () => {
   }
 };
 
-  // Handle quantity decrease
+  // cantitate scazuta
   const handleDecrease = async (item) => {
     if (item.quantity > 1) {
       try {
@@ -77,39 +92,37 @@ const CartPage = () => {
           await refetch();
           setCartItems(updatedCart);
         } else {
-          console.error("Failed to update quantity");
+          console.error("Nu s-a putut actualiza cantitatea");
         }
       } catch (error) {
-        console.error("Error updating quantity:", error);
+        console.error("Eroare in actualizarea cantitatii:", error);
       }
     }
   };
 
-  // Calculate the cart subtotal
-  const cartSubtotal = cart.reduce((total, item) => {
-    return total + calculateTotalPrice(item);
-  }, 0);
+  // Subtotal Cos
+  const cartSubtotal = Array.isArray(cart) ? cart.reduce((total, item) => total + calculateTotalPrice(item), 0) : 0;
 
-  // Calculate the order total
+  // Total comanda
   const orderTotal = cartSubtotal;
-  // console.log(orderTotal)
+ 
 
-  // delete an item
+  // stergere produs
   const handleDelete =   (item) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Esti sigur?",
+      text: "Nu vei putea reveni asupra acestei acțiuni!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Da, sterge meniul din cos!",
     }).then((result) => {
       if (result.isConfirmed) {
         axios.delete(`http://localhost:6001/carts/${item._id}`).then(response => {
           if (response) {
             refetch();
-             Swal.fire("Deleted!", "Your file has been deleted.", "success");
+             Swal.fire("Sters!", "Meniul a fost sters", "success");
            }
         })
         .catch(error => {
@@ -118,13 +131,17 @@ const CartPage = () => {
       }
     });
   };
+  if (!user) {
+    return null; 
+  }
+
 
   return (
     <div className="max-w-screen-2xl container mx-auto xl:px-24 px-4">
       {/* banner */}
       <div className=" bg-gradient-to-r from-0% from-[#FAFAFA] to-[#FCFCFC] to-100%">
         <div className="py-28 flex flex-col items-center justify-center">
-          {/* content */}
+          {/* continut */}
           <div className=" text-center px-4 space-y-7">
             <h2 className="md:text-5xl text-4xl font-bold md:leading-snug leading-snug">
               Meniuri adaugate in <span className="text-green"> Cosul de Cumparaturi</span>
@@ -133,14 +150,14 @@ const CartPage = () => {
         </div>
       </div>
 
-      {/* cart table */}
+      {/* tabel cos */}
 
       {
         (cart.length > 0) ? <div>
         <div className="">
           <div className="overflow-x-auto">
             <table className="table">
-              {/* head */}
+              {/* cap de tabel */}
               <thead className="bg-green text-white rounded-sm">
                 <tr>
                   <th>#</th>
@@ -198,19 +215,14 @@ const CartPage = () => {
                   </tr>
                 ))}
               </tbody>
-              {/* foot */}
+              {/* footer */}
             </table>
           </div>
         </div>
         <hr />
         <div className="flex flex-col md:flex-row justify-between items-start my-12 gap-8">
           <div className="md:w-1/2 space-y-3 mt-4">
-            <h3 className="text-lg font-semibold">Customer Details</h3>
-            <p>Name: {user?.displayName || "None"}</p>
-            <p>Email: {user?.email}</p>
-            <p>
-              User_id: <span className="text-sm">{user?.uid}</span>
-            </p>
+             <p>Ai uitat să adaugi un meniu dorit în coș?</p>
             <Link to= '/menu'> 
             <button className="btn btn-md bg-green text-white px-8 py-1 mt-4">
              Continua Cumparaturile
@@ -218,10 +230,10 @@ const CartPage = () => {
             </Link>
           </div>
           <div className="md:w-1/2 space-y-3">
-            <h3 className="text-lg font-semibold">Shopping Details</h3>
-            <p>Total Items: {cart.length}</p>
+            <h3 className="text-lg font-semibold">Detalii Comanda</h3>
+            <p>Numar de Meniuri: {cart.length}</p>
             <p>
-              Total Price:{" "}
+              Pret Total:{" "}
               <span id="total-price">{orderTotal.toFixed(2)} lei</span>
             </p>
             <Link to= '/cart-details'> 
@@ -232,8 +244,8 @@ const CartPage = () => {
           </div>
         </div>
       </div> : <div className="text-center mt-20">
-        <p>Cart is empty. Please add products.</p>
-        <Link to="/menu"><button className="btn bg-green text-white mt-3">Back to Menu</button></Link>
+        <p>Cosul de cumparaturi este gol. Te rog adauga produse.</p>
+        <Link to="/menu"><button className="btn bg-green text-white mt-3">Inapoi la Meniu</button></Link>
       </div>
       }
       

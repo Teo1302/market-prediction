@@ -17,19 +17,19 @@ const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // create an account
+    // creaza cont
     const createUser = (email, password) => {
         setLoading(true);
         return createUserWithEmailAndPassword(auth, email, password)
     }
 
-    // signup with gmail
+    //  gmail autent
     const signUpWithGmail = () => {
       setLoading(true);
       return  signInWithPopup(auth, googleProvider)
     }
 
-    // login using email & password
+    // login cu email & parol
     const login = (email, password) => {
         return signInWithEmailAndPassword(auth, email, password);
     }
@@ -39,14 +39,13 @@ const AuthProvider = ({children}) => {
       return signOut(auth);
   }
 
-    // update profile
+    // modifica profil
     const updateUserProfile = (name, photoURL) => {
       return  updateProfile(auth.currentUser, {
             displayName: name, photoURL: photoURL
           })
     }
 
-    // check signed-in user
     
     useEffect( () =>{
       const unsubscribe = onAuthStateChanged(auth, currentUser =>{

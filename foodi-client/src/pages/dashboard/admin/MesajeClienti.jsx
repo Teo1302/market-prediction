@@ -1,19 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { FaTrashAlt} from "react-icons/fa";
+import axios from 'axios';
+import { FaTrashAlt } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 
 const MesajeClienti = () => {
   const [clientMessages, setClientMessages] = useState([]);
 
   useEffect(() => {
-    const storedMessages = JSON.parse(localStorage.getItem('clientMessages')) || [];
-    setClientMessages(storedMessages);
+    // Funcție pentru a încărca mesajele de la clienți când se încarcă componenta
+    const fetchClientMessages = async () => {
+      try {
+        const response = await axios.get('http://localhost:6001/messages');
+        setClientMessages(response.data);
+      } catch (error) {
+        console.error('Error fetching client messages:', error);
+      }
+    };
+
+    fetchClientMessages();
   }, []);
 
-  const handleDeleteMessage = (index) => {
-    const updatedMessages = [...clientMessages];
-    updatedMessages.splice(index, 1);
-    localStorage.setItem('clientMessages', JSON.stringify(updatedMessages));
-    setClientMessages(updatedMessages);
+  const handleDeleteMessage = async (id, index) => {
+    // Afișăm un dialog de confirmare folosind SweetAlert
+    Swal.fire({
+      title: 'Sunteți sigur?',
+      text: 'Mesajul va fi șters definitiv!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Da, șterge-l!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.delete(`http://localhost:6001/messages/${id}`);
+          console.log('Message deleted:', response.data);
+          // Actualizăm lista de mesaje după ștergere
+          const updatedMessages = [...clientMessages];
+          updatedMessages.splice(index, 1);
+          setClientMessages(updatedMessages);
+          localStorage.setItem('clientMessages', JSON.stringify(updatedMessages));
+          // Afișăm un mesaj de succes cu SweetAlert
+          Swal.fire('Șters!', 'Mesajul a fost șters.', 'success');
+        } catch (error) {
+          console.error('Error deleting message:', error);
+          // Afișăm un mesaj de eroare cu SweetAlert în caz de problemă
+          Swal.fire('Eroare!', 'A apărut o eroare la ștergerea mesajului. Vă rugăm să încercați din nou.', 'error');
+        }
+      }
+    });
   };
 
   return (
@@ -35,7 +70,7 @@ const MesajeClienti = () => {
           <tbody>
             {Array.isArray(clientMessages) && clientMessages.length > 0 ? (
               clientMessages.map((message, index) => (
-                <tr key={index}>
+                <tr key={message._id}>
                   <td>{index + 1}</td>
                   <td>{message.name}</td>
                   <td>{message.email}</td>
@@ -43,8 +78,10 @@ const MesajeClienti = () => {
                   <td>{message.phone}</td>
                   <td>{message.message}</td>
                   <td>
-                  <button onClick={() => handleDeleteMessage(index) } 
-                  className="btn btn-xs bg-orange-500 text-white">
+                    <button
+                      onClick={() => handleDeleteMessage(message._id, index)}
+                      className="btn btn-xs bg-orange-500 text-white"
+                    >
                       <FaTrashAlt />
                     </button>
                   </td>
@@ -52,7 +89,9 @@ const MesajeClienti = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="text-center">Nu există mesaje de la clienți</td>
+                <td colSpan="7" className="text-center">
+                  Nu există mesaje de la clienți
+                </td>
               </tr>
             )}
           </tbody>

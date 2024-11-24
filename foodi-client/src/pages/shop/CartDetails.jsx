@@ -1,9 +1,8 @@
-
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
-import { Link } from 'react-router-dom';
-import React, { useState,useEffect } from 'react';
 import { FaRegUser } from "react-icons/fa6";
 import { IoCardOutline } from "react-icons/io5";
 import { TbTruckDelivery } from "react-icons/tb";
@@ -13,26 +12,25 @@ import DateTimePicker from 'react-datetime-picker';
 import { FaRegCalendarAlt } from "react-icons/fa";
 import useAuth from '../../hooks/useAuth.jsx';
 import Numerar from './Numerar';
-
+import axios from 'axios';
 
 const CartDetails = () => {
   const [livrareLaDomiciliu, setLivrareLaDomiciliu] = useState(false);
   const [ridicareDinRestaurant, setRidicareDinRestaurant] = useState(false);
   const [showDateTimePicker, setShowDateTimePicker] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState(new Date());
-  const [plataOnlineCuCardul, setPlataOnlineCuCardul] = useState(false);
-  const [plataNumerar,setPlataNumerar]=useState(false);
-  const { register, reset, trigger, formState: { isSubmitting } } = useForm();
+  const [plataOnlineCuCardul, setPlataOnlineCuCardul] = useState(true);
+  const [plataNumerar, setPlataNumerar] = useState(false);
   const [detaliiCompletate, setDetaliiCompletate] = useState(false);
-  const [ setIsFormCompleted] = useState(false);
+  const { register, reset, trigger, formState: { isSubmitting } } = useForm();
   const [metodaDeLivrareSelectata, setMetodaDeLivrareSelectata] = useState(false);
-  const [metodaDePlataSelectata, setmetodaDePlataSelectata] = useState(false);
-  const [tacamuriSelectate, setTacamuriSelectate] = useState('');
-  const { user } = useAuth(); 
+  const [metodaDePlataSelectata, setMetodaDePlataSelectata] = useState(false);
+  const [tacamuriSelectate, setTacamuriSelectate] = useState('da');
+  const [deliveryTimeOption, setDeliveryTimeOption] = useState('catDeRepede');
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [clientDetails, setClientDetails] = useState({});
-
-
+  const minDate = new Date();
 
   const [formData, setFormData] = useState({
     nume: '',
@@ -40,13 +38,14 @@ const CartDetails = () => {
     prenume: '',
     phone: '',
     tipLivrare: '',
-    adresaLivrare: '', 
-    oras: '', 
+    adresaLivrare: '',
+    oras: '',
     codPostal: '',
     metodaDePlata: '',
-    momentPrimireComanda: '',
+     momentPrimireComanda: '',
     tacamuri: '',
-    instructiuniSpeciale: ''
+     instructiuniSpeciale: ''
+  
   });
 
   const [errors, setErrors] = useState({
@@ -55,8 +54,8 @@ const CartDetails = () => {
     prenume: '',
     phone: '',
     tipLivrare: '',
-    adresaLivrare: '', 
-    oras: '', 
+    adresaLivrare: '',
+    oras: '',
     codPostal: '',
     metodaDePlata: '',
     momentPrimireComanda: '',
@@ -64,10 +63,9 @@ const CartDetails = () => {
     instructiuniSpeciale: ''
   });
 
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-  
+
     if ((name === 'nume' || name === 'prenume') && /[^a-zA-ZăâîșțĂÂÎȘȚ\s]/.test(value)) {
       setErrors(prevErrors => ({
         ...prevErrors,
@@ -78,15 +76,14 @@ const CartDetails = () => {
         ...prevErrors,
         [name]: ''
       }));
-  
+
       setFormData(prevFormData => ({
         ...prevFormData,
         [name]: value
       }));
     }
-  
+
     if (name === 'phone') {
-      // Verificăm dacă numărul de telefon conține doar cifre
       if (!/^\d*$/.test(value)) {
         setErrors(prevErrors => ({
           ...prevErrors,
@@ -103,16 +100,16 @@ const CartDetails = () => {
 
   const handleTimeOptionChange = (event) => {
     const value = event.target.value;
-    // Dacă utilizatorul selectează opțiunea "Mai traziu", arată câmpul de selectare a datei și orei
-    setShowDateTimePicker(value === "Mai traziu");
-    // Actualizează starea pentru momentul de primire a comenzii în formData
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      momentPrimireComanda: value === "Mai traziu" ? "Mai Tarziu" : "Cat De Repede"
-    }));
+    setDeliveryTimeOption(value);
+  
+    if (value === 'alegeData') {
+      setShowDateTimePicker(true); // Afișează DateTimePicker când se selectează "Mai târziu"
+    } else {
+      setShowDateTimePicker(false); // Ascunde DateTimePicker în alte cazuri
+    }
   };
   
- 
+
   const handleLivrareClick = () => {
     setLivrareLaDomiciliu(true);
     setRidicareDinRestaurant(false);
@@ -122,56 +119,57 @@ const CartDetails = () => {
       tipLivrare: 'domiciliu'
     }));
   };
- 
 
   const handleRidicareClick = () => {
     setLivrareLaDomiciliu(false);
     setRidicareDinRestaurant(true);
-    setMetodaDeLivrareSelectata(true);
     setFormData(prevFormData => ({
       ...prevFormData,
-      tipLivrare: 'ridicare' // Setează tipul de livrare la 'ridicare'
+      tipLivrare: 'ridicare'
     }));
+    
   };
-  
+
   const handlePlataOptionChange = (event) => {
     const value = event.target.value;
-    // Setare stări în funcție de valoarea selectată
     setPlataOnlineCuCardul(value === "plataOnline");
-    setPlataNumerar(value !== "plataOnline");
-    // Actualizare starea pentru metodaDePlata și metodaDePlataSelectata în formData
+    setPlataNumerar(value === "numerar");
     setFormData(prevFormData => ({
       ...prevFormData,
-      metodaDePlata: value === "plataOnline" ? "online" : "numerar",
-      metodaDePlataSelectata: true // Actualizare metodaDePlataSelectata
+      metodaDePlata: value
     }));
   };
-  
-  
-  
+
   const handleTacamuriOptionChange = (event) => {
     const value = event.target.value;
     setTacamuriSelectate(value);
-  
-    // Actualizarea stării momentPrimireComanda în funcție de valoarea selectată pentru tacâmuri
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      tacamuri: value === "da" ? "da" : "nu"
-    }));
   };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const requiredFields = [
+      'nume', 'prenume', 'email', 'phone', 'tipLivrare', 'metodaDePlata',
+      'momentPrimireComanda', 'tacamuri'
+    ];
   
-  
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Previne comportamentul implicit de trimitere a formularului
+    const isValid = requiredFields.every(field => formData[field].trim() !== '');
     
-    // Verifică dacă câmpurile obligatorii sunt goale
+    
+    if (!isValid ) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Eroare!',
+        text: 'Vă rugăm să completați toate câmpurile obligatorii.',
+      });
+      return;
+    }
+  
     if (
       formData.nume.trim() === '' ||
       formData.email.trim() === '' ||
       formData.prenume.trim() === '' ||
       formData.phone.trim() === ''
     ) {
-      // Actualizează starea de eroare pentru câmpurile goale
       setErrors(prevErrors => ({
         ...prevErrors,
         nume: formData.nume.trim() === '' ? 'Acest câmp este obligatoriu' : '',
@@ -179,7 +177,6 @@ const CartDetails = () => {
         prenume: formData.prenume.trim() === '' ? 'Acest câmp este obligatoriu' : '',
         phone: formData.phone.trim() === '' ? 'Acest câmp este obligatoriu' : '',
       }));
-      // Afișează un mesaj de eroare folosind SweetAlert
       Swal.fire({
         icon: 'error',
         title: 'Eroare!',
@@ -201,106 +198,109 @@ const CartDetails = () => {
       return;
     }
   
-    // Verifică dacă metoda de livrare a fost selectată
-    if (!formData.tipLivrare) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Selectați o metodă de livrare pentru a continua',
-      });
-      return;
-    }
-
-    if (formData.tipLivrare === 'domiciliu') {
-      if (
-        formData.adresaLivrare.trim() === '' ||
-        formData.oras.trim() === '' ||
-        formData.codPostal.trim() === ''
-      ) {
-        // Dacă există erori, actualizează starea errors cu erorile corespunzătoare
-        setErrors(prevErrors => ({
-          ...prevErrors,
-          adresaLivrare: formData.adresaLivrare.trim() === '' ? 'Acest câmp este obligatoriu' : '',
-          oras: formData.oras.trim() === '' ? 'Acest câmp este obligatoriu' : '',
-          codPostal: formData.codPostal.trim() === '' ? 'Acest câmp este obligatoriu' : '',
-        }));
-        // Afișează un mesaj de eroare folosind SweetAlert
-        Swal.fire({
-          icon: 'error',
-          title: 'Eroare!',
-          text: 'Vă rugăm să completați toate câmpurile de adresă pentru livrarea la domiciliu.',
-        });
-        return;
-      } else {
-        // Dacă nu există erori, actualizează starea errors pentru câmpurile respective cu valori goale
-        setErrors({
-          adresaLivrare: '',
-          oras: '',
-          codPostal: ''
-        });
-      }
-    }
-    
-    // Verifică dacă metoda de plată a fost selectată
-    if (!formData.metodaDePlataSelectata) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Selectați o metodă de plată pentru a continua',
-      });
-      return;
-    }
-    if (!formData.momentPrimireComanda) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Selectați cand sa primiti comanda pentru a continua',
-      });
-      return;
-    }
-    if (!formData.tacamuri) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Selectați daca sa primti sau nu tacamuri pentru a continua',
-      });
-      return;
-    }
-
-    // Trimiterea formularului către server sau altă acțiune
-     // Trimiterea formularului către server sau altă acțiune
-
-
-    // Afișarea unui mesaj de succes folosind SweetAlert
+    // Validarea metodei de livrare
+  if (!formData.tipLivrare) {
     Swal.fire({
-      icon: 'success',
-      title: 'Succes!',
-      text: 'Datele comenzii au fost trimise cu succes!',
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Selectați o metodă de livrare pentru a continua',
     });
-    const serializedFormData = JSON.stringify(formData);
-    localStorage.setItem("formData",serializedFormData );
-  
-    // Navigarea către pagina de plată în funcție de metoda selectată
-    if (formData.metodaDePlata === 'online') {
-      navigate('/process-checkout');
-    } else if (formData.metodaDePlata === 'numerar') {
-      navigate('/checkout-numerar');
-    }
+    return;
+  }
+
+  // Validarea câmpurilor de adresă pentru livrarea la domiciliu
+  if (formData.tipLivrare === 'domiciliu' && (!formData.adresaLivrare || !formData.oras || !formData.codPostal)) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Eroare!',
+      text: 'Vă rugăm să completați toate câmpurile de adresă pentru livrarea la domiciliu.',
+    });
+    return;
+  }
+
+  // Resetarea erorilor dacă validarea trece
+  setErrors({
+    adresaLivrare: '',
+    oras: '',
+    codPostal: ''
+  });
+
+  // Validarea metodei de plată
+  if (!formData.metodaDePlata) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Selectați o metodă de plată pentru a continua',
+    });
+    return;
+  }
+
+  // Validarea momentului de primire a comenzii
+  if (!formData.momentPrimireComanda) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Selectați cand sa primiti comanda pentru a continua',
+    });
+    return;
+  }
+
+  // Validarea tacâmurilor
+  if (!formData.tacamuri) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Selectați daca sa primti sau nu tacamuri pentru a continua',
+    });
+    return;
+  }
+
+  // Formatarea datelor înainte de trimiterea la server
+  const formattedFormData = {
+    ...formData,
+    momentPrimireComanda: selectedDateTime.toISOString(),
+    instructiuniSpeciale: formData.instructiuniSpeciale, // Convertim data la format ISO
+     
   };
-  
-  const handleGoToPayment = (event) => {
-    handleSubmit(event);
-   
- }
+
+  try {
+    const response = await axios.post('http://localhost:6001/orders', formattedFormData);
+
+    // Verificăm statusul răspunsului
+    if (response.status === 201) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Succes!',
+        text: 'Datele comenzii au fost trimise cu succes!',
+      });
+
+      // Navigare în funcție de metoda de plată selectată
+      if (formData.metodaDePlata === 'online') {
+        navigate('/process-checkout');
+      } else if (formData.metodaDePlata === 'numerar') {
+        navigate('/checkout-numerar');
+      }
+    } else {
+      throw new Error('Failed to send order data');
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'A apărut o eroare la trimiterea comenzii.',
+    });
+  }
+};
   
  useEffect(() => {
-  // Retrieve data from localStorage when component mounts
+
   const storedFormData = localStorage.getItem('formData');
   if (storedFormData) {
     setFormData(JSON.parse(storedFormData));
   }
 }, []);
   
+
 
   return (
     <div className='max-w-screen container mx-auto mt-20 text-center '>
@@ -476,69 +476,54 @@ const CartDetails = () => {
 </div>
 
 
-          {livrareLaDomiciliu && (
-            <div>
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text"><b>Adresa de livrare</b></span>
-                </label>
-                <input
-                  type="text"
-                  {...register('adresaLivrare', {
-                    required: 'Acest câmp este obligatoriu',
-                    // ... alte validări necesare
-                  })}
-                  placeholder="Introduceti adresa de livrare"
-                  className={`input input-bordered w-full ${errors.adresaLivrare ? 'input-error' : ''}`}
-                  onBlur={async () => {
-                    // Activează funcția de validare când utilizatorul părăsește câmpul
-                    await trigger('adresaLivrare');
-                  }}
-                />
-                {errors.adresaLivrare && <span className="error-message">{errors.adresaLivrare}</span>}
-              </div>
+{livrareLaDomiciliu && (
+  <div>
+    <div className="form-control w-full">
+      <label className="label">
+        <span className="label-text"><b>Adresa de livrare</b></span>
+      </label>
+      <input
+        type="text"
+        name="adresaLivrare"
+        value={formData.adresaLivrare || ''}
+        placeholder="Introduceti adresa de livrare"
+        className={`input input-bordered w-full ${errors.adresaLivrare ? 'input-error' : ''}`}
+        onChange={handleInputChange}
+      />
+      {errors.adresaLivrare && <span className="error-message">{errors.adresaLivrare}</span>}
+    </div>
 
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text"><b>Oras</b></span>
-                </label>
-                <input
-                  type="text"
-                  {...register('oras', {
-                    required: 'Acest câmp este obligatoriu',
-                    // ... alte validări necesare
-                  })}
-                  placeholder="Introduceti orasul"
-                  className={`input input-bordered w-full ${errors.oras ? 'input-error' : ''}`}
-                  onBlur={async () => {
-                    // Activează funcția de validare când utilizatorul părăsește câmpul
-                    await trigger('oras');
-                  }}
-                />
-                {errors.oras && <span className="error-message">{errors.oras}</span>}
-              </div>
+    <div className="form-control w-full">
+      <label className="label">
+        <span className="label-text"><b>Oras</b></span>
+      </label>
+      <input
+        type="text"
+        name="oras"
+        value={formData.oras || ''}
+        placeholder="Introduceti orasul"
+        className={`input input-bordered w-full ${errors.oras ? 'input-error' : ''}`}
+        onChange={handleInputChange}
+      />
+      {errors.oras && <span className="error-message">{errors.oras}</span>}
+    </div>
 
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text"><b>Cod Postal</b></span>
-                </label>
-                <input
-                  type="number"
-                  {...register('codPostal', {
-                    required: 'Acest câmp este obligatoriu',
-                    // ... alte validări necesare
-                  })}
-                  placeholder="Introduceti codul postal"
-                  className={`input input-bordered w-full ${errors.codPostal ? 'input-error' : ''}`}
-                  onBlur={async () => {
-                    // Activează funcția de validare când utilizatorul părăsește câmpul
-                    await trigger('codPostal');
-                  }}
-                />
-                {errors.codPostal && <span className="error-message">{errors.codPostal}</span>}
-              </div>
-            </div>
-          )}
+    <div className="form-control w-full">
+      <label className="label">
+        <span className="label-text"><b>Cod Postal</b></span>
+      </label>
+      <input
+        type="number"
+        name="codPostal"
+        value={formData.codPostal || ''}
+        placeholder="Introduceti codul postal"
+        className={`input input-bordered w-full ${errors.codPostal ? 'input-error' : ''}`}
+        onChange={handleInputChange}
+      />
+      {errors.codPostal && <span className="error-message">{errors.codPostal}</span>}
+    </div>
+  </div>
+)}
              {ridicareDinRestaurant && (
             <div>
               <h3 className='font-bold mt-6 text-left'>Informații Importante</h3>
@@ -564,11 +549,20 @@ const CartDetails = () => {
     <h2 className="card-title"><IoCardOutline />Plata</h2>
     <div className="card-actions flex flex-col"> 
       <label className="cursor-pointer label mb-4"> 
-        <input type="radio" {...register('metodaDePlata')} name="metodaPlata" value="plataOnline" className="radio" onChange={handlePlataOptionChange} />
+        <input type="radio" 
+         {...register('metodaDePlata', { required: true })}
+          name="metodaPlata" 
+          value="plataOnline" 
+          className="radio" 
+          checked={plataOnlineCuCardul}
+          onChange={handlePlataOptionChange} />
         <div className="label-text ml-2">Online cu cardul</div>
       </label>
       <label className="cursor-pointer label"> 
-        <input type="radio" {...register('metodaDePlata')}name="metodaPlata" value="plataNumerar" className="radio" onChange={handlePlataOptionChange} />
+        <input type="radio"  {...register('metodaDePlata', { required: true })}
+        name="metodaPlata" value="numerar" 
+        checked={plataNumerar}
+        className="radio" onChange={handlePlataOptionChange} />
         <div className="label-text ml-2">Numerar </div>
       </label>
     </div>
@@ -584,32 +578,63 @@ const CartDetails = () => {
 
 
 <div className="card w-96 bg-base-100 shadow-xl mb-8">
-  <div className="card-body">
-    <h2 className="card-title"><CiForkAndKnife />Doresti tacamuri?</h2>
-    <div className="card-actions flex flex-col"> 
-      <label className="cursor-pointer label mb-4"> 
-        <input type="radio" value="da" name="tacamuri" className="radio" onChange={handleTacamuriOptionChange} />
-        <div className="label-text ml-2">Da</div>
-      </label>
-      <label className="cursor-pointer label"> 
-        <input type="radio"  value="nu"  name="tacamuri" className="radio" onChange={handleTacamuriOptionChange} />
-        <div className="label-text ml-2">Nu </div>
-      </label>
+      <div className="card-body">
+        <h2 className="card-title"><CiForkAndKnife /> Doresti tacamuri?</h2>
+        <div className="card-actions flex flex-col">
+          <label className="cursor-pointer label mb-4">
+            <input
+              type="radio"
+              {...register('tacamuri', { required: true })}
+              value="da"
+              name="tacamuri"
+              className="radio"
+              onChange={handleTacamuriOptionChange}
+              checked={tacamuriSelectate === "da"}
+            />
+            <div className="label-text ml-2">Da</div>
+          </label>
+          <label className="cursor-pointer label">
+            <input
+              type="radio"
+              {...register('tacamuri', { required: true })}
+              value="nu"
+              name="tacamuri"
+              className="radio"
+              onChange={handleTacamuriOptionChange}
+              checked={tacamuriSelectate === "nu"}
+            />
+            <div className="label-text ml-2">Nu</div>
+          </label>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-
 
 <div className="card w-96 bg-base-100 shadow-xl mb-8">
         <div className="card-body">
           <h2 className="card-title"><FaRegCalendarAlt />Când vrei să primești comanda?</h2>
           <div className="card-actions flex flex-col">
             <label className="cursor-pointer label mb-4">
-              <input type="radio" value="acum" name="data" className="radio" onChange={handleTimeOptionChange} />
+            <input
+              type="radio"
+              {...register('momentPrimireComanda', { required: true })}
+              value="catDeRepede"
+              name="momentPrimireComanda"
+              className="radio"
+              onChange={handleTimeOptionChange}
+              checked={deliveryTimeOption === 'catDeRepede'}
+            />
               <div className="label-text ml-2">Cât de repede</div>
             </label>
             <label className="cursor-pointer label">
-              <input type="radio" value="Mai traziu" name="data" className="radio" onChange={handleTimeOptionChange} />
+            <input
+              type="radio"
+              {...register('momentPrimireComanda', { required: true })}
+              value="alegeData"
+              name="momentPrimireComanda"
+              className="radio"
+              onChange={handleTimeOptionChange}
+              checked={deliveryTimeOption === 'alegeData'}
+            />
               <div className="label-text ml-2">Mai târziu</div>
             </label>
           </div>
@@ -625,6 +650,7 @@ const CartDetails = () => {
             <DateTimePicker
               onChange={(date) => setSelectedDateTime(date)}
               value={selectedDateTime}
+              minDate={minDate}
             />
           </div>
         </div>
@@ -633,20 +659,23 @@ const CartDetails = () => {
 <div className="card w-96 bg-base-100 shadow-xl mb-8">
         <div className="card-body">
           <h2 className="card-title">Instructiuni speciale</h2>
-          <div className="card-actions flex flex-col">
-            <label className="cursor-pointer label mb-4">
-                <input
-                  type="text"
-                  placeholder="optional"
-                  ></input>
-            </label>
-</div>
+          <label className="label">
+
+  </label>
+  <textarea
+    name="instructiuniSpeciale"
+    value={formData.instructiuniSpeciale}
+    placeholder="opțional"
+    className="textarea textarea-bordered w-full"
+    onChange={handleInputChange}
+  />
 </div>
 </div>
 
+
 <Link to="/cart-page"><button className="btn bg-green text-white m-3">Inapoi la cosul de cumparaturi</button></Link>
 <button
-  onClick={handleGoToPayment}
+  onClick={handleSubmit}
   className="btn bg-green text-white mt-3 mb-3"
 >
 Trimite Comanda

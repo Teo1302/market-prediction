@@ -32,6 +32,7 @@ router.get('/',verifyToken, async (req, res) => {
     const query = { email: email };
     try {
         const decodedEmail = req.decoded.email;
+        console.log('Decoded email:', decodedEmail);
 
         if(email !== decodedEmail){
            res.status(403).json({ message: "Forbidden access!"});

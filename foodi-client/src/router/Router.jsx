@@ -15,7 +15,6 @@ import AddMenu from "../pages/dashboard/admin/AddMenu";
 import ManageItems from "../pages/dashboard/admin/ManageItems";
 import UpdateMenu from "../pages/dashboard/admin/UpdateMenu";
 import Payment from "../pages/shop/Payment";
-import Oferta from "../pages/shop/Oferta";
 import Rezervare from "../pages/shop/Rezervare";
 import Reservation from "../pages/shop/Reservation";
 import CartDetails from "../pages/shop/CartDetails";
@@ -29,6 +28,7 @@ import ClientRezervare from "../pages/shop/ClientRezervare";
 import Paste from  "../components/Paste";
 import Desert from  "../components/Desert";
 import Bauturi from  "../components/Bauturi";
+import ComenziClienti from "../pages/dashboard/admin/ComenziClienti";
 
 const router = createBrowserRouter([
   {
@@ -67,10 +67,7 @@ const router = createBrowserRouter([
         path: "/rezervare",
         element: <Rezervare/>
       },
-      {
-        path: "/oferta",
-        element: <Oferta/>
-      },
+
       {
         path: "/rezervare-client",
         element: <PrivateRouter><ClientRezervare/></PrivateRouter>
@@ -146,6 +143,10 @@ const router = createBrowserRouter([
       {
         path: "vizualizare-rezervari",
         element: <Reservation/>
+      },
+      {
+        path: "comenzi",
+        element: <ComenziClienti/>
       },
         {
         path: "update-menu/:id",

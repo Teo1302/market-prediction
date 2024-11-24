@@ -18,7 +18,7 @@ const Cards = ({ item }) => {
 
   const showAddedToCartAlert = () => {
     Swal.fire({
-      position: "top-end",
+      position: "center",
       icon: "success",
       title: "Produs adăugat în coș!",
       showConfirmButton: false,
@@ -26,62 +26,64 @@ const Cards = ({ item }) => {
     });
   };
 
-//add to cart bttn
-const handleAddtoCart = (item) => {
-  console.log("btn is clicked", item);
-  if (user && user?.email) {
-    const cartItem = {
-      menuItemId: item._id, // Modificare aici pentru a accesa corect _id-ul elementului
-      name: item.name,
-      quantity: 1, // Setăm cantitatea la 1 când adăugăm produsul în coș
-      image: item.image,
-      price: item.price,
-      email: user.email,
-    };
+  const handleAddtoCart = (item) => {
+    console.log("btn is clicked", item);
+    if (user && user?.email) {
+      const cartItem = {
+        menuItemId: item._id,
+        name: item.name,
+        quantity: 1,
+        image: item.image,
+        price: item.price,
+        email: user.email,
+      };
 
-    fetch("http://localhost:6001/carts", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(cartItem),
-    })
+      fetch("http://localhost:6001/carts", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(cartItem),
+      })
       .then((res) => res.json())
       .then((data) => {
-        if (data.insertedId) {
+        console.log("Server response:", data); 
+        if (data && Object.keys(data).length > 0) { 
+          console.log("Item added to cart, showing alert.");
           showAddedToCartAlert();
+        } else {
+          console.error("Failed to add to cart:", data);
         }
       })
       .catch((error) => {
         console.error("Error adding to cart:", error);
       });
-  } else {
-    Swal.fire({
-      title: "Please Login",
-      text: "Without an account you will not be able to add products",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Signup Now!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        navigate("/signup", { state: { from: location } });
-      }
-    });
-  }
-};
-
-  const handleAddToFavorite = () => {
-    if (!user || !user.email) {
+    } else {
       Swal.fire({
-        title: "Please Login",
-        text: "You need to be logged in to add products to favorites.",
+        title: "Te rog, autentifica-te!",
+        text: "Fara sa fii logat, nu vei putea adăuga produse in cos.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Login"
+        confirmButtonText: "Creeaza un cont Acum!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/signup", { state: { from: location } });
+        }
+      });
+    }
+  };
+  const handleAddToFavorite = () => {
+    if (!user || !user.email) {
+      Swal.fire({
+        title: "Te rog, autentifica-te!",
+        text: "Fara sa fii logat, nu vei putea adăuga produse la favorite.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Autentificare"
       }).then((result) => {
         if (result.isConfirmed) {
           navigate('/login', { state: { from: location } });
@@ -100,13 +102,13 @@ const handleAddtoCart = (item) => {
     setIsInFavorites(false);
     setIsHeartFilled(false);
     Swal.fire({
-      title: "Do you want to remove the product from favorites?",
+      title: "Vrei sa stergi produsul de la favorite?",
       showDenyButton: true,
-      confirmButtonText: "Yes",
-      denyButtonText: "No"
+      confirmButtonText: "Da",
+      denyButtonText: "Nu"
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Product Removed from Favorites!", "", "success");
+        Swal.fire("Produs sters de la favorite!", "", "success");
         // Inima devine albă numai după confirmarea eliminării
       }
     });
@@ -117,7 +119,7 @@ const handleAddtoCart = (item) => {
   const addToFavorite = () => {
     setIsInFavorites(true);
     setIsHeartFilled(true);
-    Swal.fire("Product Added to Favorites!", "", "success");
+    Swal.fire("Produs adaugat la favorite!", "", "success");
    
   };
   

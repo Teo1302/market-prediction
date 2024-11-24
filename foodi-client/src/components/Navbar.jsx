@@ -60,7 +60,7 @@ const Navbar = () => {
           <summary>Servicii</summary>
           <ul className="p-2">
             <li><a href="/rezervare">Rezerva masa!</a></li>
-            <li><a href="/order">Status comanda</a></li>
+            
           </ul>
         </details>
         </li>
@@ -100,7 +100,7 @@ const Navbar = () => {
 </button>
 </Link>
 
-    {/*cart items */}
+    {/*articole cos */}
     <Link to="cart-page" >
     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle mr-3 flex items-center justify-center">
         <div className="indicator">

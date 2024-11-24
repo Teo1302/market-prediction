@@ -11,6 +11,8 @@ const reservationSchema = new Schema({
     time: String,
     numberOfPersons: Number,
     additionalDates: String,
+    userEmail: String
+
 });
 
 const Reservation = mongoose.model('Reservation', reservationSchema);

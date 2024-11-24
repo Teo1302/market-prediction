@@ -11,49 +11,46 @@ const ClientRezervare = () => {
   const axiosSecure = useAxiosSecure();
   const reservationsEndpoint = '/rezervare-client';
 
+
   useEffect(() => {
     const fetchClientReservations = async () => {
       try {
-        const response = await axios.get('/');
-        setClientReservations(response.data);
+        const response = await axiosSecure.get(reservationsEndpoint);
+        // filtrare rezervari
+        const filteredReservations = response.data.filter(reservation => reservation.email === user.email);
+        setClientReservations(filteredReservations);
       } catch (error) {
         console.error('Error fetching client reservations:', error);
       }
     };
-    fetchClientReservations(); // apelează funcția pentru a prelua rezervările la încărcarea componentei
-  }, [user.email]);
-  
-
+    fetchClientReservations();
+  }, [user.email, axiosSecure, reservationsEndpoint]);
 
   const handleDelete = async (reservationId) => {
-    // Show a confirmation dialog using Swal
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: 'Esti sigur?',
+      text: "Nu vei putea reveni asupra acestei acțiuni!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: 'Da, sterge rezervarea!',
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           const response = await axiosSecure.delete(`${reservationsEndpoint}/${reservationId}`);
           console.log(response.data);
-          // Remove the deleted reservation from the list
           setClientReservations(clientReservations.filter(reservation => reservation._id !== reservationId));
-          // Show a success message
           Swal.fire({
-            title: 'Deleted!',
-            text: 'Your reservation has been deleted.',
+            title: 'Sters!',
+            text: 'Rezervarea ta a fost stearsa',
             icon: 'success',
           });
         } catch (error) {
           console.error('Error deleting reservation:', error);
-          // Show an error message
           Swal.fire({
-            title: 'Error!',
-            text: 'An error occurred while deleting the reservation. Please try again.',
+            title: 'Eroare!',
+            text: 'O eroare a aparut la stergerea rezervarii.Te rog sa reincerci stergerea.',
             icon: 'error',
           });
         }
@@ -77,7 +74,7 @@ const ClientRezervare = () => {
               <th>Ora</th>
               <th>Număr Persoane</th>
               <th>Date Adiționale</th>
-              <th>Status Rezervare</th>
+              
               <th>Acțiuni</th>
             </tr>
           </thead>
@@ -89,11 +86,11 @@ const ClientRezervare = () => {
                 <td>{reservation.prenume}</td>
                 <td>{reservation.email}</td>
                 <td>{reservation.phoneNumber}</td>
-                <td>{reservation.date}</td>
+                <td>{new Date(reservation.date).toLocaleDateString()}</td>
                 <td>{reservation.time}</td>
                 <td>{reservation.numberOfPersons}</td>
-                <td>{reservation.additionalDates}</td>
-                <td>{reservation.status || 'În curs de validare'}</td>
+                <td>{reservation.additionalDates ? reservation.additionalDates : '-'}</td>
+             
                 <td>
                   <button
                     onClick={() => handleDelete(reservation._id)}
